@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.event.*;
 
 public class Leaderboard extends JDialog {
@@ -8,7 +9,7 @@ public class Leaderboard extends JDialog {
     private JTable leaderboard;
     private JScrollPane leaderboardPane;
 
-    public Leaderboard(Player[] players) {
+    public Leaderboard(Player[] players, String currentPlayer) {
         // add players to leaderboard
         String[] columnNames = {"Rank", "Username", "Point"};
         Object[][] data = new Object[players.length][3];
@@ -18,6 +19,24 @@ public class Leaderboard extends JDialog {
             data[i][2] = players[i].point;
         }
         leaderboard.setModel(new JTable(data, columnNames).getModel());
+        // center the text in column of leaderboard
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        leaderboard.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+        leaderboard.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+        leaderboard.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+
+        // highlight the current player
+        for (int i = 0; i < players.length; i++) {
+            if (players[i].username.equals(currentPlayer)) {
+                leaderboard.setRowSelectionInterval(i, i);
+                break;
+            }
+        }
+
+        leaderboardPane.setViewportView(leaderboard);
+
+
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -25,12 +44,6 @@ public class Leaderboard extends JDialog {
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onOK();
-            }
-        });
-
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
             }
         });
 

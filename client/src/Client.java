@@ -54,6 +54,10 @@ public class Client extends JFrame {
     private int port = 6789;
     final static String secretKey = "secrete";
 
+    public Client() {
+        this(0);
+    }
+
     public Client(int keywordLength) {
         String name = JOptionPane.showInputDialog("Enter your name: ");
         username.setText(name);
