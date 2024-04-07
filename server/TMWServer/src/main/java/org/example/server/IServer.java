@@ -19,4 +19,6 @@ public interface IServer {
 
   void send(SocketChannel socket, Message message) throws IOException;
 
+  void broadcast(Message message) throws IOException;
+
 }
