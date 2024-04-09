@@ -3,10 +3,9 @@ package org.example.model;
 import lombok.Getter;
 import org.example.util.Constants;
 
+@Getter
 public class Message {
-    @Getter
     private final String messageHeader;
-    @Getter
     private final String messageBody;
 
     public Message(String messageHeader) {

@@ -5,7 +5,7 @@ import java.nio.charset.Charset;
 public class Constants {
 
     // ENCODE DELIMITER
-    public static final String DELIMITER = "\u000B";
+    public static final String DELIMITER = "\r\n";
     public static final Charset CHARSET = Charset.forName("UTF-8");
 
     // SEVER CONSTANTS
@@ -29,14 +29,18 @@ public class Constants {
     public static final String REGISTER_ERROR       =   "REGISTER_ERROR";
     public static final String REGISTER_SUCCESS     =   "REGISTER_SUCCESS";
 
-    public static final String SEVER_GUESS          =   "SEVER_GUESS";
-    public static final String CLIENT_GUESS         =   "CLIENT_GUESS";
+    public static final String GUESS_RESPONSE       =   "SEVER_GUESS";
+    public static final String GUESS_REQUEST        =   "CLIENT_GUESS";
 
     public static final String GUESS_CORRECT        =   "GUESS_CORRECT";
     public static final String GUESS_WRONG          =   "GUESS_WRONG";
     public static final String GUESS_ERROR          =   "GUESS_ERROR";
     public static final String GUESS_DENY           =   "GUESS_DENY";
     public static final String GUESS_ABORTED        =   "GUESS_ABORTED";
+
+    public static final String KEYWORD_GUESS_REQ    =   "KEYWORD_GUESS_REQ";
+
+    public static final String KEYWORD_GUESS_RES    =   "KEYWORD_GUESS_RES";
 
     // GAMEPLAY STATUS
     public static final String GAME_UPDATE          =   "GAME_UPDATE";

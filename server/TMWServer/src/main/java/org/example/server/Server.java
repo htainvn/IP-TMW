@@ -1,7 +1,5 @@
 package org.example.server;
 
-import static java.lang.String.format;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
@@ -12,12 +10,17 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.ServerSocketChannel;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
-import org.example.model.ClientGuessMessage;
 import org.example.model.GameManager;
 import org.example.model.Message;
+import org.example.models.GuessReqMessage;
+import org.example.models.RegisterRequestMessage;
+import org.example.models.ServerMessage;
 import org.example.util.Constants;
+import org.example.util.Decoder;
+import org.example.util.ServerInfo.MessageType;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,14 +30,19 @@ public class Server implements IServer {
   private int clients = 0;
   private Selector selector;
   private ServerSocketChannel socket;
-  private ByteBuffer buffer = ByteBuffer.allocate(2048);
+  private final ByteBuffer buffer = ByteBuffer.allocate(2048);
   private Map<SocketChannel, String> connectedClients = new HashMap<SocketChannel, String>();
   private SocketChannel[] clientList = new SocketChannel[Constants.MAX_CLIENT_CONNECTIONS];
   private GameManager currentGame = null;
-
   // Temporary testing variable
   private final String keyword = "Advanced Program in Computer Science";
   private final String hint = "University";
+
+  @Autowired
+  private EventHandler eventHandler;
+
+  @Autowired
+  private GameController gameController;
 
   public Server() throws IOException {
     try {
@@ -53,7 +61,6 @@ public class Server implements IServer {
 
           if (key.isAcceptable()) this.onConnection();
           if (key.isReadable()) this.onMessage(key);
-
           keyIterator.remove();
         }
       }
@@ -91,79 +98,44 @@ public class Server implements IServer {
   }
 
   @Override
-  public void onMessage(SelectionKey clientKey) throws IOException {
+  public void onMessage(@NotNull SelectionKey socket) throws Exception {
+    SocketChannel client;
+    client = (SocketChannel) socket.channel();
 
-    SocketChannel client = (SocketChannel) clientKey.channel();
+    String raw_message;
 
     // Read the message from clients
-    buffer.clear();
-    client.read(buffer);
-    String raw_message = new String(buffer.array(), 0, buffer.limit());
-    System.out.println(raw_message);
-    Message rcv_message = decodeMessage(raw_message);
-
-    // Handle registering phase ( whether register name valid or not )
-    if(Objects.equals(rcv_message.getMessageHeader(), Constants.CLIENT_REGISTER)) {
-      Message response_message = checkValidRegisterName(client, rcv_message.getMessageBody());
-
-      try {
-        // If register name is valid
-        if(response_message.getMessageHeader().equals(Constants.REGISTER_SUCCESS)) {
-          // Accept new client
-          if(Objects.equals(connectedClients.get(client), "")) {
-            ++clients;
-            clientList[clients] = client;
-          }
-          // Update client name
-          connectedClients.put(client, rcv_message.getMessageBody());
-        }
-        send( client, response_message );
-
-        // If there are enough players
-        if( clients == Constants.MAX_CLIENT_CONNECTIONS ) {
-         currentGame = new GameManager( keyword, hint, getClientList() );
-        }
-
-      } catch (IOException e) {
-        send( client, new Message( Constants.SEVER_ERROR ) );
-        throw new RuntimeException(e);
-      }
-      return;
+    try {
+      buffer.clear();
+      client.read(buffer);
+      raw_message = new String(buffer.array(), 0, buffer.limit());
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
 
-    // Handle responds from user ( turn-based, right form, ... )
+    MessageType messageType = Decoder.decode(raw_message);
+
+    if (messageType == MessageType.GUESS) {
+      ServerMessage resp = eventHandler.onGuessingRequest(
+          client,
+          GuessReqMessage.fromString(raw_message)
+      );
+      MessageSender.send(client, resp);
+
+    }
+    else if (messageType == MessageType.REGISTER) {
+      ServerMessage resp = eventHandler.onRegistrationRequest(
+          client,
+          Objects.requireNonNull(RegisterRequestMessage.fromString(raw_message))
+      );
+      MessageSender.send(client, resp);
+    }
+
   }
 
   @Override
   public void onConnection() throws IOException {
 
-    SocketChannel client = socket.accept();
-
-    if( clients == Constants.MAX_CLIENT_CONNECTIONS ) {
-      System.out.printf("Number of clients reach the limitation.%n");
-      send( client, new Message( Constants.CONNECTION_REJECT, "Number of clients reach the limitation." ) );
-      client.close();
-      return;
-    }
-
-    if( currentGame != null ) {
-      System.out.printf("Current game is on: %s%n");
-      send( client, new Message( Constants.CONNECTION_REJECT, "Current game is on" ) );
-      client.close();
-      return;
-    }
-
-    // Register client with the Selector
-    client.configureBlocking(false);
-    client.register(selector, SelectionKey.OP_READ);
-    send(client, new Message(Constants.CONNECTION_ACCEPT) );
-
-    // Store client into Map
-    connectedClients.put(client, "");
-
-    // Send message for register name
-    Message registerMessage = new Message( Constants.SEVER_REGISTER );
-    send(client, registerMessage);
   }
 
   @Override
@@ -171,67 +143,7 @@ public class Server implements IServer {
 
   }
 
-  @Override
-  public void send(SocketChannel client, Message message) throws IOException {
-    try {
-      byte[] messageBytes = message.toString().getBytes(Constants.CHARSET);
-      ByteBuffer encode = ByteBuffer.wrap(messageBytes);
-      client.write(encode);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  @Override
-  public void broadcast(Message message) throws IOException {
-    try {
-      byte[] messageBytes = message.toString().getBytes(Constants.CHARSET);
-      ByteBuffer encode = ByteBuffer.wrap(messageBytes);
-      for( SocketChannel client : connectedClients.keySet() ) {
-        client.write(encode);
-        encode.rewind();
-      }
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static boolean checkRegex(String input) {
-    // Compile the pattern
-    Pattern pattern = Pattern.compile(Constants.REGEX);
-
-    // Check if the input string matches the pattern and falls within the specified length range
-    return pattern.matcher(input).matches();
-  }
-
-  private Message checkValidRegisterName( SocketChannel client, String registerName ) throws IOException {
-
-    if( !checkRegex(registerName) ) {
-      return new Message( Constants.REGISTER_ERROR, "Invalid register name: " + registerName);
-    }
-
-    for( Map.Entry<SocketChannel, String> entry : connectedClients.entrySet() ) {
-      if( registerName.equals( entry.getValue() ) ) {
-        return new Message( Constants.REGISTER_ERROR, "This name is already in use!");
-      }
-    }
-
-    return new Message(Constants.REGISTER_SUCCESS);
-  }
-
-  private Message decodeMessage( String message ) throws IOException {
-    String[] messagePart = message.split(Constants.DELIMITER);
-    if( messagePart.length != 2 ) {
-      return new ClientGuessMessage( messagePart[0], messagePart[1], Integer.parseInt(messagePart[2]) );
-    }
-    return new Message( messagePart[0], messagePart[1] );
-  }
-
-  private String[] getClientList() {
-    String[] result = new String[clients];
-    for( SocketChannel client : clientList ) {
-      result[clients] = connectedClients.get(client);
-    }
-    return result;
+  public void startGame() {
+    gameController.setRandomQuiz();
   }
 }

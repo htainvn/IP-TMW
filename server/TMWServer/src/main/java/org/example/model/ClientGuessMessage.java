@@ -3,8 +3,8 @@ package org.example.model;
 import lombok.Getter;
 import org.example.util.Constants;
 
+@Getter
 public class ClientGuessMessage extends Message {
-    @Getter
     private final int guessType;
 
     public ClientGuessMessage(String messageHeader, String messageBody, int guessType) {
