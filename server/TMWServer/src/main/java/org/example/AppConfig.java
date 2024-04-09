@@ -14,7 +14,7 @@ import org.example.server.Server;
 public class AppConfig {
 
     @Autowired
-    public AppConfig(Server server, EventHandler eventHandler, GameController gameController) {
+    public AppConfig(Server server) {
         System.out.println("AppConfig created");
     }
 }

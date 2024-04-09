@@ -11,8 +11,6 @@ import java.nio.channels.ServerSocketChannel;
 
 import java.util.*;
 
-import org.example.model.GameManager;
-import org.example.model.Message;
 import org.example.models.GuessReqMessage;
 import org.example.models.RegisterRequestMessage;
 import org.example.models.ServerMessage;
@@ -27,32 +25,33 @@ import org.springframework.stereotype.Component;
 public class Server implements IServer {
 
   // Private variable
-  private int clients = 0;
   private Selector selector;
   private ServerSocketChannel socket;
-  private final ByteBuffer buffer = ByteBuffer.allocate(2048);
-  private Map<SocketChannel, String> connectedClients = new HashMap<SocketChannel, String>();
-  private SocketChannel[] clientList = new SocketChannel[Constants.MAX_CLIENT_CONNECTIONS];
-  private GameManager currentGame = null;
-  // Temporary testing variable
-  private final String keyword = "Advanced Program in Computer Science";
-  private final String hint = "University";
+  private Vector<SocketChannel> connectedClients = new Vector<>();
 
-  @Autowired
   private EventHandler eventHandler;
 
-  @Autowired
   private GameController gameController;
 
-  public Server() throws IOException {
+  private ClientContact clientContact;
+
+  @Autowired
+  public Server(
+          EventHandler eventHandler,
+          GameController gameController,
+          ClientContact clientContact)
+  throws IOException {
+    this.eventHandler = eventHandler;
+    this.gameController = gameController;
+    this.clientContact = clientContact;
     try {
       // Start the Sever
       this.start(Constants.SEVER_PORT);
 
       while (true) {
 
+        System.out.printf("Hello hello%n");
         selector.select();
-
         Set<SelectionKey> selectorKeys = selector.selectedKeys();
         Iterator<SelectionKey> keyIterator = selectorKeys.iterator();
 
@@ -66,11 +65,11 @@ public class Server implements IServer {
       }
 
     } catch (Exception e) {
-      this.onError(e);
+      e.printStackTrace();
+//      this.onError(e);
     }
   }
 
-  @Override
   public void start(int port) throws Exception {
     // Open Selector
     selector = Selector.open();
@@ -90,6 +89,13 @@ public class Server implements IServer {
 
     // Notify that the sever is successfully start
     System.out.printf("Server started on port %d%n", port);
+    // Initialize new name
+    try {
+      gameController.newGame();
+    }
+    catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
   }
 
   @Override
@@ -106,7 +112,7 @@ public class Server implements IServer {
 
     // Read the message from clients
     try {
-      buffer.clear();
+      ByteBuffer buffer = ByteBuffer.allocate(512);
       client.read(buffer);
       raw_message = new String(buffer.array(), 0, buffer.limit());
     } catch (Exception e) {
@@ -128,6 +134,7 @@ public class Server implements IServer {
           client,
           Objects.requireNonNull(RegisterRequestMessage.fromString(raw_message))
       );
+      System.out.println(resp);
       MessageSender.send(client, resp);
     }
 
@@ -135,7 +142,16 @@ public class Server implements IServer {
 
   @Override
   public void onConnection() throws IOException {
-
+    try {
+      SocketChannel client = socket.accept();
+      client.configureBlocking(false);
+      client.register(selector, SelectionKey.OP_READ);
+      connectedClients.add(client);
+      System.out.printf("New client connected: %s%n", client.getRemoteAddress());
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+//      throw new RuntimeException(e);
+    }
   }
 
   @Override
@@ -143,7 +159,14 @@ public class Server implements IServer {
 
   }
 
-  public void startGame() {
-    gameController.setRandomQuiz();
+  public void startGame() throws IOException {
+    for (SocketChannel client : connectedClients) {
+      if( clientContact.getName((client)) == null ) {
+        connectedClients.remove(client);
+        client.close();
+      }
+    }
+
+    gameController.nextIteration();
   }
 }

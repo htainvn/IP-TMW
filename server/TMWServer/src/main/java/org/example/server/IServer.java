@@ -5,6 +5,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import org.example.model.Message;
 import org.example.models.ServerMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public interface IServer {
 

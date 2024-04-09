@@ -75,4 +75,6 @@ public class ClientContact {
 
   public SocketChannel get(int index) { return clients.get(index); }
 
+  public Integer getNumberOfClients() { return clients.size(); }
+
 }

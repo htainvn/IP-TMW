@@ -25,17 +25,8 @@ public class GameController {
   private Boolean isCharacterRevealed;
 
   public GameController() {
-    try {
-      gameid = javax.crypto
-          .KeyGenerator
-          .getInstance("AES")
-          .generateKey()
-          .toString();
-    } catch (NoSuchAlgorithmException e) {
-      e.printStackTrace();
-    }
     quizzes = new ArrayList<>();
-    File file = new File("database.txt");
+    File file = new File("D:\\IP\\IP-TMW\\server\\TMWServer\\src\\main\\java\\org\\example\\resource\\database.txt");
     try {
       Scanner scanner = new Scanner(file);
       // Load quizzes from file
@@ -50,6 +41,21 @@ public class GameController {
       e.printStackTrace();
     }
   }
+
+  public void newGame() {
+    try {
+      gameid = javax.crypto
+              .KeyGenerator
+              .getInstance("AES")
+              .generateKey()
+              .toString();
+    } catch (NoSuchAlgorithmException e) {
+      e.printStackTrace();
+    }
+    setRandomQuiz();
+  }
+
+//  public boolean startGame() {}
 
   public void setRandomQuiz() {
     isGamePlayable = true;

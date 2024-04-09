@@ -118,6 +118,17 @@ public class EventHandler implements IEventHandler {
           .optionalMessageBody("You are not yet allowed to guess")
           .build();
     }
+
+    if (!gameController.isPlayersAllowedToGuess()) {
+      return ServerMessage.builder()
+              .messageHeader(ServerInfo.GUESS_REJECTED)
+              .fromHost(ServerInfo.SERVER_HOST)
+              .fromPort(ServerInfo.SERVER_PORT)
+              .status(ServerInfo.STATUS_ERROR)
+              .optionalMessageBody("You are not allowed to guess now.")
+              .build();
+    }
+
     Boolean isCorrect = gameController.guessCharacter(msg.getGuess_char());
     if (isCorrect) {
       scoreBoard.updateScore(

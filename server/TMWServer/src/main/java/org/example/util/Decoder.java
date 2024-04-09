@@ -25,13 +25,19 @@ public class Decoder {
     - Name: the username of the player
     - Guess: the word guessed by the player
      */
+    System.out.println(message);
     String[] lines = message.split(Constants.DELIMITER);
-    String messageType = lines[0].split(":")[1].trim();
-    if (messageType.equals(ClientInfo.REGISTER)) {
-      return MessageType.REGISTER;
-    } else if (messageType.equals(ClientInfo.GUESS)) {
-      return MessageType.GUESS;
-    } else {
+    try {
+      String messageType = lines[0].split(":")[1].trim();
+      if (messageType.equals(ClientInfo.REGISTER)) {
+        return MessageType.REGISTER;
+      } else if (messageType.equals(ClientInfo.GUESS)) {
+        return MessageType.GUESS;
+      } else {
+        return null;
+      }
+    }
+    catch (Exception e) {
       return null;
     }
   }
