@@ -5,6 +5,7 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import javax.validation.Valid;
 import org.example.util.ServerInfo;
 import org.example.util.ServerInfo.UserRegistrationStatus;
@@ -13,9 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClientContact {
 
-  private ArrayList<SocketChannel> clients;
+  private ArrayList<SocketChannel> clients = new ArrayList<>();
 
-  private Dictionary<SocketChannel, String> names;
+  private Dictionary<SocketChannel, String> names = new Hashtable<SocketChannel, String>();
 
   private UserRegistrationStatus isValid(String name) {
     /*
