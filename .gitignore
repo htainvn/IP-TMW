@@ -23,7 +23,12 @@
 hs_err_pid*
 replay_pid*
 
-.idea/
+.idea
+*.iws
+*.iml
+*.ipr
+/out/
 .DS_Store
+src/.DS_Store
 server/.DS_Store
 server/TMWServer/.idea/workspace.xml
