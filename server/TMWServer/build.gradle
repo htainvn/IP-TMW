@@ -20,6 +20,7 @@ dependencies {
     implementation 'org.springframework:spring-context:5.1.0.RELEASE'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
     implementation 'org.javatuples:javatuples:1.2'
+    implementation 'com.jgoodies:jgoodies-forms:1.9.0'
 }
 
 test {
