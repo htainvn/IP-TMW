@@ -1,6 +1,6 @@
 package org.example.server;
 
-import com.sun.tools.javac.util.Pair;
+import org.javatuples.Pair;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Enumeration;

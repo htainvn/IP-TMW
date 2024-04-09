@@ -1,6 +1,5 @@
 package org.example;
 
-import javax.annotation.PostConstruct;
 import lombok.NoArgsConstructor;
 import org.example.server.EventHandler;
 import org.example.server.GameController;

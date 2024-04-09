@@ -1,6 +1,6 @@
 package org.example.models;
 
-import com.sun.tools.javac.util.Pair;
+import org.javatuples.Pair;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Value;
 import org.example.util.ServerInfo;
 
-@Builder
 public class RankingAnnounceMessage extends ServerMessage {
 
   /// @documentation
@@ -42,11 +41,11 @@ public class RankingAnnounceMessage extends ServerMessage {
     messageBody.append("  \"scores\": {\n");
     for (int i = 0; i < scores.size(); i++) {
       Pair<String, Integer> score = scores.get(i);
-      messageBody.append("    \"").append(score.fst).append("\": {\n");
+      messageBody.append("    \"").append(score.getValue0()).append("\": {\n");
       if (isRankingIncluded) {
         messageBody.append("      \"rank\": ").append(i + 1).append(",\n");
       }
-      messageBody.append("      \"score\": ").append(score.snd).append("\n");
+      messageBody.append("      \"score\": ").append(score.getValue1()).append("\n");
       messageBody.append("    }");
       if (i < scores.size() - 1) {
         messageBody.append(",");
@@ -69,7 +68,7 @@ public class RankingAnnounceMessage extends ServerMessage {
       String key = keys.nextElement();
       scores_array.add(new Pair<>(key, scores.get(key)));
     }
-    scores_array.sort((o1, o2) -> o2.snd - o1.snd);
+    scores_array.sort((o1, o2) -> o2.getValue1() - o1.getValue1());
     return (RankingAnnounceMessage) ServerMessage.builder()
         .messageHeader(ServerInfo.RANKING_ANNOUNCE)
         .fromHost(ServerInfo.SERVER_HOST)

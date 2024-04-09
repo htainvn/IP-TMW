@@ -18,7 +18,7 @@ dependencies {
     implementation 'javax:javaee-api:7.0'
     compileOnly 'org.projectlombok:lombok:1.18.32'
     implementation 'org.springframework:spring-context:5.1.0.RELEASE'
-    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
     implementation 'org.javatuples:javatuples:1.2'
 }
 

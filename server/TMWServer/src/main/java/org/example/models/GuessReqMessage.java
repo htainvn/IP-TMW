@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class GuessReqMessage extends Message {
 
   private String name;
