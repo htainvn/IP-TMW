@@ -16,9 +16,12 @@ public class ServerInfo {
   public static final Integer MAXIMUM_PLAYERS = 10;
   public static final Integer KEYWORD_GUESS_ALLOWANCE = 2;
   public static final Integer PLAYER_NOT_FOUND = -1;
-
   public static final String SERVER_HOST = "localhost";
   public static final Integer SERVER_PORT = 7777;
+  public static final String WRONG_FORMAT = "WRONG_FORMAT";
+  public static final String GAME_ALREADY_STARTED = "GAME_ALREADY_STARTED";
+
+  public static final int STARTING_ITERATION = 0;
 
   public enum UserStatus {
     REGISTERED,
@@ -34,6 +37,7 @@ public class ServerInfo {
     INVALID_NAME,
     NAME_TOO_LONG,
     NAME_VALID,
+    ALREADY_REGISTERED,
   }
 
   public enum MessageType {

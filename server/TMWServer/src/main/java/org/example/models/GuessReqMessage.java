@@ -42,7 +42,7 @@ public class GuessReqMessage extends Message {
     try {
       String[] lines = message.split(Constants.DELIMITER);
       if (lines.length != ClientInfo.GUESS_LENGTH) {
-        throw new Exception("Invalid message format for a keyword guess request: Expected 7 lines");
+        throw new Exception("Invalid message format for a keyword guess request: Expected 8 lines");
       }
       msg.messageHeader = lines[0].split(":")[1].trim();
       if (!msg.messageHeader.equals(ClientInfo.GUESS)) {
@@ -58,7 +58,12 @@ public class GuessReqMessage extends Message {
       catch (Exception e) {
         throw new Exception("Invalid character guess: " + e.getMessage());
       }
-      msg.guess_word = lines[6].split(":")[1].trim();
+      try {
+        msg.guess_word = lines[6].split(":")[1].trim();
+      }
+      catch (ArrayIndexOutOfBoundsException e) {
+        msg.guess_word = null;
+      }
       return msg;
     } catch (Exception e) {
       System.out.println(e.getMessage());

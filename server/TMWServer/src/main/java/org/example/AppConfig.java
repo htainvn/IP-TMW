@@ -1,8 +1,7 @@
 package org.example;
 
+import javax.annotation.PostConstruct;
 import lombok.NoArgsConstructor;
-import org.example.server.EventHandler;
-import org.example.server.GameController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +13,10 @@ import org.example.server.Server;
 public class AppConfig {
 
     @Autowired
-    public AppConfig(Server server) {
-        System.out.println("AppConfig created");
+    public AppConfig(
+        gui GUI,
+        Server server
+    ) {
+        server.init();
     }
 }

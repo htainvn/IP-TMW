@@ -3,8 +3,10 @@ package org.example.server;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 import org.example.models.ServerMessage;
 import org.example.util.Constants;
+import org.javatuples.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +25,12 @@ public class MessageSender {
   public static void broadcast(@NotNull SocketChannel[] clients, @NotNull ServerMessage msg) throws RuntimeException {
     for (SocketChannel client : clients) {
       send(client, msg);
+    }
+  }
+
+  public static void deliver(@NotNull SocketChannel[] client, @NotNull ServerMessage[] msg) throws RuntimeException {
+    for (int i = 0; i < client.length; i++) {
+      send(client[i], msg[i]);
     }
   }
 }

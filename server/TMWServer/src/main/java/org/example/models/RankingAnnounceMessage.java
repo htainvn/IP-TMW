@@ -30,6 +30,16 @@ public class RankingAnnounceMessage extends ServerMessage {
       },
      */
 
+  public RankingAnnounceMessage (
+      ServerMessage message
+  ) {
+    messageHeader = message.getMessageHeader();
+    fromHost = message.getFromHost();
+    fromPort = message.getFromPort();
+    status = message.getStatus();
+    optionalMessageBody = message.getOptionalMessageBody();
+  }
+
   private static String convertToJSONString(
       @NotNull String gameId,
       @NotNull ArrayList<Pair<String, Integer>> scores,
@@ -69,12 +79,12 @@ public class RankingAnnounceMessage extends ServerMessage {
       scores_array.add(new Pair<>(key, scores.get(key)));
     }
     scores_array.sort((o1, o2) -> o2.getValue1() - o1.getValue1());
-    return (RankingAnnounceMessage) ServerMessage.builder()
+    return new RankingAnnounceMessage(ServerMessage.builder()
         .messageHeader(ServerInfo.RANKING_ANNOUNCE)
         .fromHost(ServerInfo.SERVER_HOST)
         .fromPort(ServerInfo.SERVER_PORT)
         .status(ServerInfo.STATUS_OK)
         .optionalMessageBody(convertToJSONString(gameId, scores_array, isRankingIncluded))
-        .build();
+        .build());
   }
 }

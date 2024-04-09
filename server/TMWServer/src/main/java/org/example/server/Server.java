@@ -11,17 +11,26 @@ import java.nio.channels.ServerSocketChannel;
 
 import java.util.*;
 
+import javax.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.example.gui;
 import org.example.models.GuessReqMessage;
 import org.example.models.RegisterRequestMessage;
 import org.example.models.ServerMessage;
 import org.example.util.Constants;
 import org.example.util.Decoder;
+import org.example.util.ServerInfo;
 import org.example.util.ServerInfo.MessageType;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
+@NoArgsConstructor
 public class Server implements IServer {
 
   // Private variable
@@ -35,33 +44,38 @@ public class Server implements IServer {
 
   private ClientContact clientContact;
 
+  private Boolean keepServerRunning = true;
+
   @Autowired
   public Server(
-          EventHandler eventHandler,
-          GameController gameController,
-          ClientContact clientContact)
-  throws IOException {
+      EventHandler eventHandler,
+      GameController gameController,
+      ClientContact clientContact
+  ) throws IOException {
     this.eventHandler = eventHandler;
     this.gameController = gameController;
     this.clientContact = clientContact;
+    System.out.println("Server created");
+  }
+
+  public void init() {
     try {
       // Start the Sever
       this.start(Constants.SEVER_PORT);
 
-      while (true) {
+      while (keepServerRunning) {
 
-        System.out.printf("Hello hello%n");
         selector.select();
         Set<SelectionKey> selectorKeys = selector.selectedKeys();
         Iterator<SelectionKey> keyIterator = selectorKeys.iterator();
 
         while (keyIterator.hasNext()) {
           SelectionKey key = keyIterator.next();
-
           if (key.isAcceptable()) this.onConnection();
           if (key.isReadable()) this.onMessage(key);
           keyIterator.remove();
         }
+
       }
 
     } catch (Exception e) {
@@ -100,7 +114,9 @@ public class Server implements IServer {
 
   @Override
   public void stop() throws Exception {
-
+    keepServerRunning = false;
+    socket.close();
+    System.exit(0);
   }
 
   @Override
@@ -122,19 +138,44 @@ public class Server implements IServer {
     MessageType messageType = Decoder.decode(raw_message);
 
     if (messageType == MessageType.GUESS) {
-      ServerMessage resp = eventHandler.onGuessingRequest(
-          client,
-          GuessReqMessage.fromString(raw_message)
-      );
+      ServerMessage resp;
+      try {
+        resp = eventHandler.onGuessingRequest(
+            client,
+            Objects.requireNonNull(GuessReqMessage.fromString(raw_message))
+        );
+      }
+      catch (NullPointerException e) {
+        resp = ServerMessage.builder()
+            .messageHeader(ServerInfo.WRONG_FORMAT)
+            .fromHost(ServerInfo.SERVER_HOST)
+            .fromPort(ServerInfo.SERVER_PORT)
+            .status(ServerInfo.STATUS_ERROR)
+            .optionalMessageBody("")
+            .build();
+      }
       MessageSender.send(client, resp);
-
+      if (resp.getOptionalMessageBody().equals("Correct guess") ||
+          resp.getOptionalMessageBody().equals("Incorrect guess")
+      ) {
+        eventHandler.onGuessBeforeTimeUp();
+      }
     }
     else if (messageType == MessageType.REGISTER) {
-      ServerMessage resp = eventHandler.onRegistrationRequest(
-          client,
-          Objects.requireNonNull(RegisterRequestMessage.fromString(raw_message))
-      );
-      System.out.println(resp);
+      ServerMessage resp;
+      try {
+        resp = eventHandler.onRegistrationRequest(
+            client,
+            Objects.requireNonNull(RegisterRequestMessage.fromString(raw_message))
+        );
+      } catch (Exception e) {
+        resp = ServerMessage.builder()
+            .messageHeader(ServerInfo.WRONG_FORMAT)
+            .fromHost(ServerInfo.SERVER_HOST)
+            .fromPort(ServerInfo.SERVER_PORT)
+            .status(ServerInfo.STATUS_ERROR)
+            .build();
+      }
       MessageSender.send(client, resp);
     }
 
@@ -166,7 +207,6 @@ public class Server implements IServer {
         client.close();
       }
     }
-
-    gameController.nextIteration();
+    eventHandler.onGameStart();
   }
 }

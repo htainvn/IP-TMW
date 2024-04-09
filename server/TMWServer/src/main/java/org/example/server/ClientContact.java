@@ -1,12 +1,10 @@
 package org.example.server;
 
-import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import javax.validation.Valid;
 import org.example.util.ServerInfo;
 import org.example.util.ServerInfo.UserRegistrationStatus;
 import org.springframework.stereotype.Component;
@@ -15,9 +13,7 @@ import org.springframework.stereotype.Component;
 public class ClientContact {
 
   private ArrayList<SocketChannel> clients = new ArrayList<>();
-
   private Dictionary<SocketChannel, String> names = new Hashtable<SocketChannel, String>();
-
   private UserRegistrationStatus isValid(String name) {
     /*
     The nickname is composed by the following characters ‘a’...’z’, ‘A’...’Z’, ‘0’...’9’, ‘_’  and the length is not longer than 10 characters.
@@ -37,6 +33,9 @@ public class ClientContact {
   }
 
   public UserRegistrationStatus addClient(SocketChannel client, String name) {
+    if (names.get(client) != null) {
+      return UserRegistrationStatus.ALREADY_REGISTERED;
+    }
     UserRegistrationStatus status = isValid(name);
     if (status != UserRegistrationStatus.NAME_VALID) {
       return status;
@@ -57,14 +56,16 @@ public class ClientContact {
     }
   }
 
-  public Boolean reset() {
+  public void reset() {
     try {
       while (names.keys().hasMoreElements()) {
         names.remove(names.keys().nextElement());
       }
-      return true;
+      while (clients.iterator().hasNext()) {
+        clients.remove(clients.iterator().next());
+      }
     } catch (Exception e) {
-      return false;
+      e.printStackTrace();
     }
   }
 
@@ -78,4 +79,11 @@ public class ClientContact {
 
   public Integer getNumberOfClients() { return clients.size(); }
 
+  public SocketChannel[] getCatalog() {
+    SocketChannel[] catalog = new SocketChannel[clients.size()];
+    for (int i = 0; i < clients.size(); i++) {
+      catalog[i] = clients.get(i);
+    }
+    return catalog;
+  }
 }

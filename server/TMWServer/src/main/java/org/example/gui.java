@@ -2,13 +2,17 @@ package org.example;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import org.springframework.stereotype.Component;
+import org.example.observer.UIObserver;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.*;
 import org.example.models.Player;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 @Component
+@Order(3)
 public class gui extends JFrame {
     private JButton startButton;
     private JPanel globalPanel;
@@ -16,7 +20,11 @@ public class gui extends JFrame {
     private JTable playerTable;
     private Player[] players;
 
-    public gui() {
+    private UIObserver uiObserver;
+
+    @Autowired
+    public gui(UIObserver uiObserver) {
+        this.uiObserver = uiObserver;
         setTitle("GUI");
         initGlobalPanel();
         setContentPane(globalPanel);
@@ -67,9 +75,27 @@ public class gui extends JFrame {
         startButton.setPreferredSize(buttonSize);
         endButton.setPreferredSize(buttonSize);
 
+        startButton.addActionListener(e -> {
+            System.out.println("Start button clicked");
+            try {
+                uiObserver.observeStartSignal();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+
+        endButton.addActionListener(e -> {
+            System.out.println("End button clicked");
+            try {
+                uiObserver.observeStopSignal();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+
     }
 
-    public static void main(String[] args) {
-        new gui();
-    }
+//    public static void main(String[] args) {
+//        new gui();
+//    }
 }
