@@ -3,7 +3,6 @@ package org.example.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import org.example.client.Message;
 import org.example.util.ClientInfo;
 import org.example.util.Constants;
 import org.springframework.lang.Nullable;

@@ -21,5 +21,15 @@ public class SeverInfo {
     public static final String WRONG_FORMAT = "WRONG_FORMAT";
     public static final String GAME_ALREADY_STARTED = "GAME_ALREADY_STARTED";
 
+    public static final Integer SERVER_MESSAGE_LENGTH = 5;
+
+    public enum MessageType {
+        CONNECTION,
+        GUESS,
+        GAME_START,
+        GAME_END,
+        RANKING,
+    }
+
     private SeverInfo() {}
 }

@@ -1,7 +1,6 @@
 package org.example.models;
 
 import lombok.*;
-import org.example.client.Message;
 import org.example.util.ClientInfo;
 import org.example.util.Constants;
 
