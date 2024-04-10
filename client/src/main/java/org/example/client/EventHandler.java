@@ -1,14 +1,22 @@
 package org.example.client;
 
-import lombok.NoArgsConstructor;
-import org.example.models.ServerMessage;
+import org.example.models.*;
+import org.example.storage.Storage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 @Component
-@NoArgsConstructor
 public class EventHandler implements IEventHandler {
+
+    private Storage storage;
+
+    @Autowired
+    public EventHandler(final Storage storage) {
+        this.storage = storage;
+    }
 
     @Override
     public void onConnectionRespond(@NotNull ServerMessage msg) {
@@ -21,8 +29,11 @@ public class EventHandler implements IEventHandler {
     }
 
     @Override
-    public void onStartGame(@NotNull ServerMessage msg) {
+    public void onStartGame(@NotNull GameInfoMessage msg) {
         System.out.println("onStartGame");
+        storage.setGameID(msg.getGameID());
+        storage.setClientName(msg.getClientName());
+        storage.setGameOrder(Integer.valueOf(msg.getGameOrder()));
     }
 
     @Override
@@ -31,7 +42,27 @@ public class EventHandler implements IEventHandler {
     }
 
     @Override
-    public void onRankingAnnounce(@NotNull ServerMessage msg) {
+    public void onRankingAnnounce(@NotNull RankingAnnounce msg) {
         System.out.println("onRankingAnnounce");
+        if(!Objects.equals(msg.getGameID(), storage.getGameID())) return;
+        storage.setScores(msg.getPlayers());
+    }
+
+    @Override
+    public void onTurn() {
+        System.out.println("onTurn");
+        sendGuessRequest('o', "Address Resolution Protocol");
+    }
+
+    public void sendRegisterRequest(@NotNull String clientName) {
+        System.out.println("sendRegisterRequest");
+        RegisterReqMessage registerReqMessage = new RegisterReqMessage(clientName);
+        MessageSender.send(SocketClient.client, registerReqMessage);
+    }
+
+    public void sendGuessRequest(@NotNull char guessChar, String guessWord) {
+        System.out.println("sendGuessRequest");
+        GuessReqMessage guessReqMessage = new GuessReqMessage(storage.getGameID(), storage.getClientName(), guessChar, guessWord);
+        MessageSender.send(SocketClient.client, guessReqMessage);
     }
 }

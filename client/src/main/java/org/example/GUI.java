@@ -1,5 +1,11 @@
 package org.example;
 
+import org.example.observer.UIObserver;
+import org.example.storage.Storage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -7,22 +13,22 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 
 import static java.lang.Math.min;
 import static java.lang.Math.round;
 
-public class Client extends JFrame {
-    private JButton sendButton;
+@Component
+@Order(2)
+public class GUI extends JFrame {
+    private JButton sendButton = new JButton("Send");
     private JTextField keywordGuessing;
     private JPanel keywordGuessingPanel;
-    private JPanel charPanel;
+    private JPanel charPanel = new JPanel();
     private JPanel guessingPanel;
-    private JPanel globalPanel;
+    private JPanel globalPanel = new JPanel();
     private JTextPane hintText;
     private JPanel keywordPanel;
     private JPanel userInfoPanel;
@@ -36,10 +42,10 @@ public class Client extends JFrame {
     private JLabel pointLabel;
     private JLabel point;
     private JLabel guessLabel;
-    private JProgressBar timerBar;
+    private JProgressBar timerBar = new JProgressBar();
     private JToggleButton[] charButtons;
     private JToggleButton currentCharButton = null;
-    private ButtonGroup buttonGroup;
+    private ButtonGroup buttonGroup = new ButtonGroup();
     private final int BUTTON_SIZE = 50;
     private final int WORDS_PER_ROW = 15;
     private final int COUNT_DOWN = 10 * 1000;
@@ -54,20 +60,17 @@ public class Client extends JFrame {
     private int port = 6789;
     final static String secretKey = "secrete";
 
-    public Client() {
-        this(0);
-    }
+    private UIObserver uiObserver;
+    private Storage storage;
 
-    public Client(int keywordLength) {
-        String name = JOptionPane.showInputDialog("Enter your name: ");
-        username.setText(name);
-
-        this.keywordLength = keywordLength;
-        buttonGroup = new ButtonGroup();
+    @Autowired
+    public GUI(UIObserver uiObserver, Storage storage) {
+        this.uiObserver = uiObserver;
+        this.storage = storage;
 
         setTitle("The Magical Wheel");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setKeyword("");
+//        setKeyword();
 
         timerBar.setValue(0);
 
@@ -78,69 +81,16 @@ public class Client extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
         setResizable(false);
+        buttonGroup = new ButtonGroup();
 
         StyledDocument documentStyle = hintText.getStyledDocument();
         SimpleAttributeSet centerAttribute = new SimpleAttributeSet();
         StyleConstants.setAlignment(centerAttribute, StyleConstants.ALIGN_CENTER);
         documentStyle.setParagraphAttributes(0, documentStyle.getLength(), centerAttribute, false);
         timerFill();
-    }
 
-    public void startRunning() {
-        try {
-//            status.setText("Attempting Connection ...");
-            try {
-                connection = new Socket(InetAddress.getByName(serverIP), port);
-            } catch (IOException ioEception) {
-                JOptionPane.showMessageDialog(null, "Server Might Be Down!", "Warning", JOptionPane.WARNING_MESSAGE);
-            }
-//            status.setText("Connected to: " + connection.getInetAddress().getHostName());
-
-
-            output = new ObjectOutputStream(connection.getOutputStream());
-            output.flush();
-            input = new ObjectInputStream(connection.getInputStream());
-
-            whileChatting();
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
-    }
-
-
-    private void whileChatting() throws IOException
-    {
-//        jTextField1.setEditable(true);
-//        do{
-//            try
-//            {
-//                message = (String) input.readObject();
-//                chatArea.append("\n"+message);
-//            }
-//            catch(ClassNotFoundException classNotFoundException)
-//            {
-//            }
-//        }while(!message.equals("Client - END"));
-    }
-
-
-    private void sendMessage(String message)
-    {
-//        try
-//        {
-//            chatArea.append("\nME(Client) - "+message);
-//            String encryptedmsg = encyrDecry.encrypt(message, secretKey);
-//            System.out.println(encryptedmsg);
-//            output.writeObject("                                                             (enc):" + encryptedmsg);
-//            EncryDecry encyrDecry = new EncryDecry();
-//            message = encyrDecry.decrypt(encryptedmsg, secretKey);
-//            output.writeObject("                                                             Client(decrypt) - " + message);
-//            output.flush();
-//        }
-//        catch(IOException ioException)
-//        {
-//            chatArea.append("\n Unable to Send Message");
-//        }
+        String name = JOptionPane.showInputDialog("Enter your name: ");
+        username.setText(name);
     }
 
     private void initGuessPanel() {
@@ -150,7 +100,7 @@ public class Client extends JFrame {
                 int choosenOption = 0;
                 if (!keywordGuessing.getText().isEmpty()) {
                     Object[] options = {"Yes", "No"};
-                    choosenOption = JOptionPane.showOptionDialog(Client.this,
+                    choosenOption = JOptionPane.showOptionDialog(GUI.this,
                             "Would you like to send keyword?",
                             "Send keyword",
                             JOptionPane.YES_NO_OPTION,
@@ -169,19 +119,15 @@ public class Client extends JFrame {
 
                 if (0 == choosenOption) {
                     // Send keyword
+
                 }
             }
         });
     }
 
-    public void setKeyword(String keyword) {
-        keyword = keyword.replace('*', '_');
+    public void setKeyword() {
 
-        if (keyword.isEmpty()) {
-            for (int i = 0; i < keywordLength; i++) {
-                keyword += "_";
-            }
-        }
+        String keyword = storage.getKeyword() == null ? "Hello World" : storage.getKeyword();
 
         keywordPanel.removeAll();
         keywordPanel.setLayout(new GridLayout(Math.floorDiv(keyword.length(), WORDS_PER_ROW), min(WORDS_PER_ROW, keyword.length())));
@@ -192,7 +138,6 @@ public class Client extends JFrame {
             JLabel label = new JLabel();
             label.setBorder(BorderFactory.createEmptyBorder(1, 4, 0, 0));
             label.setText(String.valueOf(keyword.charAt(i)));
-            //Matahari Mono 700 Bold
             label.setFont(new Font("JetBrains Mono", Font.PLAIN, 28));
             keywordPanel.add(label);
         }
@@ -217,9 +162,6 @@ public class Client extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         currentCharButton = (JToggleButton) e.getSource();
-
-                        // set font to Google Sans
-//                        button.setEnabled(false);
                     }
                 });
                 charPanel.add(button);
@@ -240,9 +182,5 @@ public class Client extends JFrame {
             sendButton.doClick();
         } catch (Exception e) {
         }
-    }
-
-    public static void main(String[] args) {
-        new Client(5);
     }
 }

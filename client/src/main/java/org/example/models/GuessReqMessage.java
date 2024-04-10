@@ -19,14 +19,12 @@ public class GuessReqMessage extends Message {
     private String guessWord;
 
     public GuessReqMessage(
-            @NotNull String toHost,
-            @NonNull Integer toPort,
             @NonNull String gameID,
             @NonNull String clientName,
             @NonNull Character guessChar,
             @Nullable String guessWord)
     {
-        super(ClientInfo.GUESS, toHost, toPort);
+        super(ClientInfo.GUESS, "localhost", Constants.SEVER_PORT);
         this.gameID = gameID;
         this.clientName = clientName;
         this.guessChar = guessChar;
@@ -34,7 +32,7 @@ public class GuessReqMessage extends Message {
     }
 
     public String toString() {
-        return "Header" + messageHeader
+        return "Header: " + messageHeader
                 + Constants.DELIMITER
                 + "Host: " + toHost
                 + Constants.DELIMITER

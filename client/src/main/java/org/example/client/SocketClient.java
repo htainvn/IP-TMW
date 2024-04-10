@@ -1,11 +1,11 @@
 package org.example.client;
 
 import org.example.models.GameInfoMessage;
+import org.example.models.RankingAnnounce;
 import org.example.models.ServerMessage;
 import org.example.util.Decoder;
-import org.example.util.SeverInfo;
 import org.example.util.Constants;
-import org.example.util.SeverInfo.MessageType;
+import org.example.util.ServerInfo.MessageType;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class SocketClient implements IClient {
     private final InetSocketAddress serverAddress = new InetSocketAddress("localhost", Constants.SEVER_PORT);
 
     private Selector selector;
-    private SocketChannel client;
+    public static SocketChannel client;
     private Boolean stillConnected = false;
 
     private EventHandler eventHandler;
@@ -38,18 +38,20 @@ public class SocketClient implements IClient {
     @Autowired
     public SocketClient(EventHandler eventHandler) {
         this.eventHandler = eventHandler;
-        System.out.println("Client created");
+        System.out.println("GUI created");
     }
 
+    @Override
     public void init() throws IOException {
         System.out.println("Initializing SocketClient");
         selector = Selector.open();
         connect();
+//        sendRegister("lvphuc21");
         while( stillConnected ) {
-            if(selector.select() == -1) stop();
+            selector.select();
             Set<SelectionKey> selectedKeys = selector.selectedKeys();
             Iterator<SelectionKey> iterator = selectedKeys.iterator();
-            while (iterator.hasNext()) {
+            while (iterator.hasNext() && stillConnected) {
                 SelectionKey key = iterator.next();
                 if (key.isReadable()) onMessage();
                 iterator.remove();
@@ -57,6 +59,7 @@ public class SocketClient implements IClient {
         }
     }
 
+    @Override
     public void connect() throws IOException {
         System.out.println("Connecting to " + serverAddress);
         try {
@@ -71,28 +74,51 @@ public class SocketClient implements IClient {
         }
     }
 
+    @Override
     public void stop() throws IOException {
-        client.close();
+        System.out.println("GUI stopped");
         stillConnected = false;
-        System.out.println("Client stopped");
+        client.close();
     }
 
+    @Override
     public void onMessage() throws IOException {
 
         String raw_message;
 
         try {
-            ByteBuffer buffer = ByteBuffer.allocate(1024);
+            ByteBuffer buffer = ByteBuffer.allocate(512);
             client.read(buffer);
             raw_message = new String(buffer.array(), 0, buffer.limit());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        try {
-        MessageType messageType = Decoder.decode(raw_message);
+        if(raw_message.isEmpty()) return;
 
-            switch (messageType) {
+        String[] subMessages = raw_message.split("Type");
+        for(String subMessage : subMessages) {
+            resolveMessage(subMessage);
+        }
+    }
+
+    @Override
+    public void onError(Exception e) {
+
+    }
+
+    private void resolveMessage( String raw_message ) {
+
+        if(raw_message.isEmpty()) return;
+
+        try {
+            MessageType messageType = Decoder.decode(raw_message);
+            //System.out.println("onMessage: " + messageType);
+
+            switch (Objects.requireNonNull(messageType)) {
+                case DISCONNECTED:
+                    stop();
+                    return;
                 case CONNECTION:
                     eventHandler.onConnectionRespond(
                             Objects.requireNonNull(ServerMessage.fromString(raw_message))
@@ -105,13 +131,16 @@ public class SocketClient implements IClient {
                     break;
                 case RANKING:
                     eventHandler.onRankingAnnounce(
-                            Objects.requireNonNull(ServerMessage.fromString(raw_message))
+                            Objects.requireNonNull(RankingAnnounce.fromString(raw_message))
                     );
                     break;
                 case GAME_START:
                     eventHandler.onStartGame(
                             Objects.requireNonNull(GameInfoMessage.fromString(raw_message))
                     );
+                    break;
+                case YOUR_TURN:
+                    eventHandler.onTurn();
                     break;
                 case GAME_END:
                     eventHandler.onEndGame(
@@ -122,13 +151,17 @@ public class SocketClient implements IClient {
                     throw new RuntimeException("Unknown message type: " + messageType);
             }
         } catch (RuntimeException e) {
-            System.err.println("Client exception: " + e.getMessage());
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            System.err.println("GUI exception: " + e.getMessage());
         }
     }
 
-    @Override
-    public void onError(Exception e) {
-
+    public void sendRegister(String clientName) {
+        eventHandler.sendRegisterRequest(clientName);
     }
 
+    public void sendGuess(char guessChar, String guessWord) {
+        eventHandler.sendGuessRequest(guessChar, guessWord);
+    }
 }

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.util.Constants;
-import org.example.util.SeverInfo;
+import org.example.util.ServerInfo;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
@@ -37,8 +37,8 @@ public class GameInfoMessage extends ServerMessage {
             }
 
             try {
-                if (lines.length > SeverInfo.SERVER_MESSAGE_LENGTH) {
-                    msg.gameID = msg.optionalMessageBody;
+                if (lines.length > ServerInfo.SERVER_MESSAGE_LENGTH) {
+                    msg.gameID = lines[4].split(":")[2].trim();
                     msg.clientName = lines[5].split(":")[1].trim();
                     msg.gameOrder = lines[6].split(":")[1].trim();
                 }

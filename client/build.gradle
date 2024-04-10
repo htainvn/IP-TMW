@@ -23,6 +23,7 @@ dependencies {
     implementation 'com.jgoodies:jgoodies-forms:1.9.0'
     // https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'com.google.code.gson:gson:2.9.0'
 }
 
 test {
