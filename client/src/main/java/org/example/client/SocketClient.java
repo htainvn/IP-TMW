@@ -27,7 +27,7 @@ import java.nio.channels.SocketChannel;
 @NoArgsConstructor
 public class SocketClient implements IClient {
 
-    private final InetSocketAddress serverAddress = new InetSocketAddress(Constants.SERVER_IP, Constants.SEVER_PORT);
+    private final InetSocketAddress serverAddress = new InetSocketAddress("localhost", Constants.SEVER_PORT);
 
     private Selector selector;
     private SocketChannel client;
@@ -45,7 +45,7 @@ public class SocketClient implements IClient {
         System.out.println("Initializing SocketClient");
         selector = Selector.open();
         connect();
-        while( !stillConnected ) {
+        while( stillConnected ) {
             if(selector.select() == -1) stop();
             Set<SelectionKey> selectedKeys = selector.selectedKeys();
             Iterator<SelectionKey> iterator = selectedKeys.iterator();
@@ -57,13 +57,14 @@ public class SocketClient implements IClient {
         }
     }
 
-    public Boolean connect() throws IOException {
+    public void connect() throws IOException {
+        System.out.println("Connecting to " + serverAddress);
         try {
             client = SocketChannel.open(serverAddress);
             client.configureBlocking(false);
             client.register(selector, SelectionKey.OP_READ);
             stillConnected = true;
-            return true;
+            System.out.println("Connected");
         } catch (IOException e) {
             System.out.println("Could not connect to " + serverAddress);
             throw new RuntimeException(e);
