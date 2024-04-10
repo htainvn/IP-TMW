@@ -47,7 +47,7 @@ public class RankingAnnounceMessage extends ServerMessage {
   ) {
     StringBuilder messageBody = new StringBuilder();
     messageBody.append("{\n");
-    messageBody.append("  \"gameid\": ").append(gameId).append(",\n");
+    messageBody.append("  \"gameid\": \"").append(gameId).append("\",\n");
     messageBody.append("  \"scores\": {\n");
     for (int i = 0; i < scores.size(); i++) {
       Pair<String, Integer> score = scores.get(i);

@@ -102,6 +102,7 @@ public class Server implements IServer {
     socket.register( selector, SelectionKey.OP_ACCEPT );
 
     // Notify that the sever is successfully start
+    System.out.println(serverSocketAddr);
     System.out.printf("Server started on port %d%n", port);
     // Initialize new name
     try {
@@ -115,6 +116,7 @@ public class Server implements IServer {
   @Override
   public void stop() throws Exception {
     keepServerRunning = false;
+    for( SocketChannel client : connectedClients ) disconnectClient(client);
     socket.close();
     System.exit(0);
   }
@@ -191,7 +193,7 @@ public class Server implements IServer {
       System.out.printf("New client connected: %s%n", client.getRemoteAddress());
     } catch (IOException e) {
       System.out.println(e.getMessage());
-//      throw new RuntimeException(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -201,12 +203,33 @@ public class Server implements IServer {
   }
 
   public void startGame() throws IOException {
-    for (SocketChannel client : connectedClients) {
-      if( clientContact.getName((client)) == null ) {
-        connectedClients.remove(client);
-        client.close();
+    Iterator<SocketChannel> iterator = connectedClients.iterator();
+    while (iterator.hasNext()) {
+      SocketChannel client = iterator.next();
+      if (clientContact.getName(client) == null) {
+        disconnectClient(client);
+        iterator.remove();
       }
     }
     eventHandler.onGameStart();
+  }
+
+  private void disconnectClient(SocketChannel client) throws IOException {
+    try {
+      ServerMessage resp = ServerMessage.builder()
+              .messageHeader(ServerInfo.DISCONNECTED)
+              .fromHost(ServerInfo.SERVER_HOST)
+              .fromPort(ServerInfo.SERVER_PORT)
+              .status(ServerInfo.STATUS_OK)
+              .optionalMessageBody("Hope to see you soon!")
+              .build();
+
+      MessageSender.send(client, resp);
+      client.close();
+    } catch (RuntimeException e) {
+      throw new RuntimeException(e);
+    } catch (IOException e) {
+      System.out.println(e.getMessage() + " : " + client);
+    }
   }
 }
