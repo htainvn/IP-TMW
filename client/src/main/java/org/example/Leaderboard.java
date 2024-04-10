@@ -1,3 +1,7 @@
+package org.example;
+
+import org.example.models.Player;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.event.*;

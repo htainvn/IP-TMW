@@ -33,7 +33,7 @@
                 <constraints/>
                 <properties>
                   <font style="0"/>
-                  <text value="Player:"/>
+                  <text value="org.example.models.Player:"/>
                 </properties>
               </component>
               <component id="280bd" class="javax.swing.JLabel" binding="username">

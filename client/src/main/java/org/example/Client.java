@@ -1,3 +1,5 @@
+package org.example;
+
 import javax.swing.*;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -5,12 +7,10 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 import static java.lang.Math.min;
@@ -184,7 +184,7 @@ public class Client extends JFrame {
         }
 
         keywordPanel.removeAll();
-        keywordPanel.setLayout(new GridLayout(Math.ceilDiv(keyword.length(), WORDS_PER_ROW), min(WORDS_PER_ROW, keyword.length())));
+        keywordPanel.setLayout(new GridLayout(Math.floorDiv(keyword.length(), WORDS_PER_ROW), min(WORDS_PER_ROW, keyword.length())));
 //        keywordPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 //        keywordPanel.setPreferredSize(new Dimension(BUTTON_SIZE * wordsPerRow, 300));
 

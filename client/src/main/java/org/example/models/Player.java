@@ -1,3 +1,5 @@
+package org.example.models;
+
 public class Player {
     public int rank;
     public String username;
