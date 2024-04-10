@@ -11,10 +11,7 @@ import java.nio.channels.ServerSocketChannel;
 
 import java.util.*;
 
-import javax.annotation.PostConstruct;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.example.gui;
 import org.example.models.GuessReqMessage;
 import org.example.models.RegisterRequestMessage;
 import org.example.models.ServerMessage;
@@ -24,9 +21,6 @@ import org.example.util.ServerInfo;
 import org.example.util.ServerInfo.MessageType;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component

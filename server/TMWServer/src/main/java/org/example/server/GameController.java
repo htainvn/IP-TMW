@@ -149,4 +149,11 @@ public class GameController {
     iteration = 0;
   }
 
+  public String getHint() {
+    return quiz.getHint();
+  }
+
+    public Integer getCurrentIteration() {
+        return iteration;
+    }
 }
