@@ -148,12 +148,11 @@ public class SocketClient implements IClient {
                     );
                     break;
                 default:
-                    throw new RuntimeException("Unknown message type: " + messageType);
+                    return;
             }
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            System.err.println("GUI exception: " + e.getMessage());
+        } catch (RuntimeException | IOException e) {
+            System.out.println("Could not resolve message: " + raw_message.trim());
+            return;
         }
     }
 
