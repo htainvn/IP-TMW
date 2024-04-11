@@ -1,0 +1,82 @@
+JFDML JFormDesigner: "8.2.2.0.382" Java: "17.0.10" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) {
+			"hgap": 10
+			"vgap": 2
+		} ) {
+			name: "this"
+			"$sizePolicy": 1
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "globalPanel"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
+					"$columnSpecs": "default, labelcompgap, default:grow"
+					"$rowSpecs": "default:grow, default"
+				} ) {
+					name: "contentPanel2"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "destLabel"
+						"text": "Destination:"
+						"labelFor": new FormReference( "destLabelTextField" )
+						"focusable": false
+					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "destLabelTextField"
+					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+						"gridX": 3
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "portLabel"
+						"text": "Port: "
+						"labelFor": new FormReference( "portTextField" )
+						"horizontalAlignment": 11
+					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+						"gridY": 2
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "portTextField"
+					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+						"gridX": 3
+						"gridY": 2
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.HorizontalLayout ) ) {
+					name: "contentPanel"
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "North"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "panel1"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+					name: "buttonBar"
+					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "okButton"
+						"text": "OK"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "East"
+				} )
+				add( new FormComponent( "javax.swing.JProgressBar" ) {
+					name: "progressBar"
+					"preferredSize": new java.awt.Dimension( 146, 12 )
+					"indeterminate": true
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "South"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Last"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 400, 155 )
+		} )
+	}
+}

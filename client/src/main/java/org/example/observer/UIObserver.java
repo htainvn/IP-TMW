@@ -1,5 +1,7 @@
 package org.example.observer;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.example.client.SocketClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -15,6 +17,14 @@ import javax.validation.constraints.NotNull;
 public class UIObserver {
     private SocketClient socketClient;
 
+    @Getter
+    @Setter
+    Enum<ConnectingPhase> currentPhase = ConnectingPhase.REGISTRATION;
+
+    @Getter
+    @Setter
+    Enum<ConnectingState> currentState = ConnectingState.WAITING;
+
     @Autowired
     public UIObserver(SocketClient socketClient) {
         this.socketClient = socketClient;
@@ -26,6 +36,28 @@ public class UIObserver {
     }
 
     public void observeGuessSignal(char guessChar, String guessWord) {
+        socketClient.sendGuess(guessChar, guessWord);
+    }
+
+    public void connectServer(String dest, String port) {
+        try {
+            socketClient.connect(dest, port);
+            currentState = ConnectingState.CONNECTED;
+        } catch (Exception e) {
+            System.out.println("Error connecting to server " + dest + ":" + port);
+            currentState = ConnectingState.FAILED;
+        }
+    }
+
+    public Boolean isConnected() {
+        return socketClient.isConnected();
+    }
+
+    public void setUsername(String username) {
+        socketClient.sendRegister(username);
+    }
+
+    public void sendGuess(char guessChar, String guessWord) {
         socketClient.sendGuess(guessChar, guessWord);
     }
 }

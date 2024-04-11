@@ -4,9 +4,9 @@ import org.example.models.GameInfoMessage;
 import org.example.models.RankingAnnounce;
 import org.example.models.ServerMessage;
 import org.example.util.Decoder;
-import org.example.util.Constants;
 import org.example.util.ServerInfo.MessageType;
 import lombok.NoArgsConstructor;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,9 +25,10 @@ import java.nio.channels.SocketChannel;
 
 @Component
 @NoArgsConstructor
+@Order(1)
 public class SocketClient implements IClient {
 
-    private final InetSocketAddress serverAddress = new InetSocketAddress("localhost", Constants.SEVER_PORT);
+    private InetSocketAddress serverAddress;// = new InetSocketAddress("localhost", Constants.SEVER_PORT);
 
     private Selector selector;
     public static SocketChannel client;
@@ -38,14 +39,14 @@ public class SocketClient implements IClient {
     @Autowired
     public SocketClient(EventHandler eventHandler) {
         this.eventHandler = eventHandler;
-        System.out.println("GUI created");
+//        System.out.println("GUI created");
     }
 
     @Override
     public void init() throws IOException {
         System.out.println("Initializing SocketClient");
         selector = Selector.open();
-        connect();
+        // connect();
 //        sendRegister("lvphuc21");
         while( stillConnected ) {
             selector.select();
@@ -60,7 +61,8 @@ public class SocketClient implements IClient {
     }
 
     @Override
-    public void connect() throws IOException {
+    public void connect(String dest, String port) throws IOException {
+        serverAddress = new InetSocketAddress(dest, Integer.parseInt(port));
         System.out.println("Connecting to " + serverAddress);
         try {
             client = SocketChannel.open(serverAddress);
@@ -162,5 +164,9 @@ public class SocketClient implements IClient {
 
     public void sendGuess(char guessChar, String guessWord) {
         eventHandler.sendGuessRequest(guessChar, guessWord);
+    }
+
+    public Boolean isConnected() {
+        return stillConnected;
     }
 }

@@ -1,0 +1,228 @@
+JFDML JFormDesigner: "8.2.2.0.382" Java: "17.0.10" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		"$setComponentNames": true
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "overallPanel"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+				"$columnSpecs": "0"
+				"$rowSpecs": "0, 0, 0, 0, 0, 0"
+			} ) {
+				name: "globalPanel"
+				"maximumSize": new java.awt.Dimension( 480, 2147483647 )
+				"minimumSize": new java.awt.Dimension( 480, 92 )
+				"preferredSize": new java.awt.Dimension( 440, 509 )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+					name: "userInfoPanel"
+					"opaque": false
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+						"alignment": 0
+					} ) {
+						name: "usernameDisplay"
+						"opaque": false
+						"preferredSize": new java.awt.Dimension( 150, 27 )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "usernameLabel"
+							"font": new com.jformdesigner.model.SwingDerivedFont( null, 196608, 0, true )
+							"text": "Nickname:"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "username"
+							"text": "sss"
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "West"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
+						name: "myTurnDisplay"
+						"autoscrolls": true
+						"background": new java.awt.Color( 48, 43, 5, 255 )
+						"minimumSize": new java.awt.Dimension( 200, 27 )
+						"opaque": false
+						"preferredSize": new java.awt.Dimension( 200, 27 )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "myTurnLabel"
+							"font": new com.jformdesigner.model.SwingDerivedFont( null, 196608, 0, true )
+							"text": "My turn:"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "myTurnText"
+							"focusable": false
+							"text": "325"
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "Center"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+						"alignment": 2
+					} ) {
+						name: "pointDisplay"
+						"focusable": false
+						"inheritsPopupMenu": false
+						"opaque": false
+						"preferredSize": new java.awt.Dimension( 150, 27 )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "pointLabel"
+							"font": new com.jformdesigner.model.SwingDerivedFont( null, 196608, 0, true )
+							"text": "Point:"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "point"
+							"text": "10"
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "East"
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"weightx": 1.0
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0"
+					"$rowSpecs": "0, 0, 0"
+				} ) {
+					name: "guessingPanel"
+					"background": new java.awt.Color( 92, 242, 39, 255 )
+					"enabled": false
+					"opaque": false
+					"visible": true
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "gameTitle"
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Archivo Expanded Black", 0, 18, true )
+						"horizontalAlignment": 0
+						"horizontalTextPosition": 0
+						"text": "The Magical Wheel \ud83c\udfa1"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"weightx": 1.0
+						"insets": new java.awt.Insets( 10, 0, 0, 0 )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+						"$columnCount": 1
+						"$rowCount": 1
+						"margin": new java.awt.Insets( 0, 5, 0, 5 )
+					} ) {
+						name: "keywordPanel"
+						"alignmentY": 0.0f
+						"background": new java.awt.Color( 242, 224, 11, 255 )
+						"opaque": false
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 2
+						"hAlign": 0
+						"vAlign": 0
+						"weightx": 1.0
+						"weighty": 1.0
+					} )
+					add( new FormComponent( "javax.swing.JTextPane" ) {
+						name: "hintText"
+						"alignmentY": 0.0f
+						"autoscrolls": true
+						"background": new java.awt.Color( 242, 224, 11, 255 )
+						"editable": false
+						"focusable": false
+						"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 14, true )
+						"margin": new java.awt.Insets( 0, 3, 0, 3 )
+						"opaque": false
+						"text": "AFSDFSADDDDDDDDDDDDDDDDDDDDDDDD SADFASDFSADFSA  AS DFSA DFSADFASDF AS ASD FSADFASF "
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 1
+						"weightx": 1.0
+						"insets": new java.awt.Insets( 5, 16, 0, 16 )
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 1
+					"weightx": 1.0
+					"weighty": 1.0
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "guessLabel"
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 131073, 14, true )
+					"horizontalAlignment": 0
+					"horizontalTextPosition": 0
+					"text": "Guess a Letter"
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 2
+					"hAlign": 0
+					"vAlign": 0
+					"weightx": 1.0
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
+					name: "charPanel"
+					"autoscrolls": false
+					"background": new java.awt.Color( 242, 224, 11, 255 )
+					"opaque": false
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 3
+					"hAlign": 0
+					"weightx": 1.0
+					"weighty": 10.0
+					"insets": new java.awt.Insets( 0, 16, 0, 16 )
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+					"$columnCount": 2
+					"$rowCount": 1
+					"margin": new java.awt.Insets( 4, 32, 0, 32 )
+				} ) {
+					name: "keywordGuessingPanel"
+					"enabled": true
+					"visible": true
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "keywordGuessing"
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Google Sans", 0, 0, true )
+						"margin": new java.awt.Insets( 2, 6, 2, 6 )
+						"text": ""
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"anchor": 8
+						"fill": 3
+						"hSizePolicy": 6
+						"vSizePolicy": 2
+						"preferredSize": new java.awt.Dimension( 150, -1 )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "sendButton"
+						"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 14, true )
+						"text": "Send"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"column": 1
+						"fill": 1
+						"vSizePolicy": 0
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 4
+					"vAlign": 3
+					"weighty": 0.1
+				} )
+				add( new FormComponent( "javax.swing.JProgressBar" ) {
+					name: "timerBar"
+					"alignmentX": 0.0f
+					"focusable": false
+					"foreground": new java.awt.Color( 5, 229, 58, 255 )
+					"indeterminate": false
+					"string": "50%"
+					"stringPainted": false
+					"value": 50
+					"verifyInputWhenFocusTarget": false
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 5
+					"vAlign": 0
+					"insets": new java.awt.Insets( 4, 0, 0, 0 )
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
+				name: "playerPanel"
+				"minimumSize": new java.awt.Dimension( 200, 10 )
+				"preferredSize": new java.awt.Dimension( 200, 10 )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "After"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 416 )
+			"size": new java.awt.Dimension( 592, 400 )
+		} )
+	}
+}

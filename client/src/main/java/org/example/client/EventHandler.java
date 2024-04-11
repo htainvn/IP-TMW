@@ -57,6 +57,7 @@ public class EventHandler implements IEventHandler {
     public void sendRegisterRequest(@NotNull String clientName) {
         System.out.println("sendRegisterRequest");
         RegisterReqMessage registerReqMessage = new RegisterReqMessage(clientName);
+        System.out.println("sendRegisterRequest: " + registerReqMessage);
         MessageSender.send(SocketClient.client, registerReqMessage);
     }
 

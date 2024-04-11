@@ -19,4 +19,13 @@ public class Storage {
     private String keyword;
 
     private Vector<Pair<String, Integer>> scores;
+
+    public Number getPoint(String name) {
+        for (Pair<String, Integer> score : scores) {
+            if (score.getValue0().equals(name)) {
+                return score.getValue1();
+            }
+        }
+        return -1;
+    }
 }
