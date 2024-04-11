@@ -15,4 +15,16 @@ public class Player {
         this.username = username;
         this.point = point;
     }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public String getName() {
+        return username;
+    }
+
+    public int getPoint() {
+        return point;
+    }
 }

@@ -17,6 +17,7 @@ import java.nio.channels.SocketChannel;
 public class UIObserver {
   private Server server;
   private ClientContact clientContact;
+  private int phase = 0;
 
   @Autowired
   public UIObserver(Server server, ClientContact clientContact) {
@@ -27,6 +28,7 @@ public class UIObserver {
 
   public void observeStartSignal() throws Exception {
     server.startGame();
+    setPhase(2);
   }
 
   public void observeStopSignal() throws Exception {
@@ -41,4 +43,13 @@ public class UIObserver {
     }
     return players;
   }
+
+  public void setPhase(int phase) {
+    System.out.println("Phase set to " + phase);
+    this.phase = phase;
+  }
+
+    public int getPhase() {
+        return this.phase;
+    }
 }
