@@ -8,9 +8,11 @@ public class ServerInfo {
   public static final String GAME_END = "GAME_END";
   public static final String CONNECTION_REJECTED = "REGISTERED_REJECTED";
   public static final String CONNECTION_ACCEPTED = "REGISTERED_ACCEPTED";
-
   public static final String GUESS_ACCEPTED = "GUESS_ACCEPTED";
   public static final String GUESS_REJECTED = "GUESS_REJECTED";
+  public static final String WINNER_ANNOUNCE = "WINNER_ANNOUNCE";
+  public static final String DISQUALIFY_ANNOUNCE = "DISQUALIFY_ANNOUNCE";
+  public static final String GAME_STATE = "GAME_STATE";
   public static final String STATUS_OK = "OK";
   public static final String STATUS_ERROR = "ERROR";
   public static final Integer MAXIMUM_PLAYERS = 10;

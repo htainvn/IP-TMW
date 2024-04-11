@@ -58,6 +58,7 @@ public class EventHandler implements IEventHandler {
           .optionalMessageBody("Registration Completed Successfully")
           .build();
       scoreBoard.onNewPlayer(msg.getName());
+      gameController.setNumPlayer(gameController.getNumPlayer() + 1);
     }
     else {
       String messageBody;
@@ -70,8 +71,7 @@ public class EventHandler implements IEventHandler {
           break;
         case INVALID_NAME:
           messageBody = "Invalid name. "
-              + "Your name should be composed by alphanumeric characters or '_'"
-              + " and the length is not longer than 10 characters";
+              + "Your name should be composed by alphanumeric characters or '_'";
           break;
         case REJECTED:
           messageBody = "The game is full. Please try again later.";
@@ -144,6 +144,35 @@ public class EventHandler implements IEventHandler {
               .build();
     }
 
+    if (gameController.getIteration() > 2 && !msg.getGuess_word().isEmpty()) {
+      Boolean isCorrect = gameController.guessKeyword(msg.getGuess_word());
+      if (isCorrect) {
+        scoreBoard.updateScore(
+            msg.getName(),
+            5
+        );
+        gameController.setCharacterRevealedMode(true);
+        return ServerMessage.builder()
+            .messageHeader(ServerInfo.WINNER_ANNOUNCE)
+            .fromHost(ServerInfo.SERVER_HOST)
+            .fromPort(ServerInfo.SERVER_PORT)
+            .status(ServerInfo.STATUS_OK)
+            .optionalMessageBody("Congratulations! You have guessed the keyword!")
+            .build();
+      }
+      else {
+        clientContact.disqualify(client);
+        gameController.setCharacterRevealedMode(false);
+        return ServerMessage.builder()
+            .messageHeader(ServerInfo.DISQUALIFY_ANNOUNCE)
+            .fromHost(ServerInfo.SERVER_HOST)
+            .fromPort(ServerInfo.SERVER_PORT)
+            .status(ServerInfo.STATUS_ERROR)
+            .optionalMessageBody("Oops! You have been disqualified for guessing the wrong keyword.")
+            .build();
+      }
+    }
+
     Boolean isCorrect = gameController.guessCharacter(msg.getGuess_char());
     if (isCorrect) {
       scoreBoard.updateScore(
@@ -176,36 +205,55 @@ public class EventHandler implements IEventHandler {
   public void onNewIteration() {
     f = null;
     gameController.nextIteration();
-    Integer maxIteration = clientContact.getNumberOfClients() - 1;
-    if (gameController.ifGameEnds(maxIteration)) {
+    Integer maxIteration = clientContact.getNumberOfClients();
+    if (gameController.ifGameEnds()) {
       this.onGameEnd();
+      return;
     }
-    else {
-      if (gameController.getIteration() != ServerInfo.STARTING_ITERATION) {
-        ServerMessage msg = this.onResultPublished(false);
-        MessageSender.broadcast(clientContact.getCatalog(), msg);
+    if (gameController.getIteration() != ServerInfo.STARTING_ITERATION) {
+      ServerMessage msg = this.onResultPublished(false);
+      MessageSender.broadcast(clientContact.getCatalog(), msg);
+    }
+    String gameState = gameController.getGameState();
+    ServerMessage gameStateMessage = ServerMessage.builder()
+        .messageHeader(ServerInfo.GAME_STATE)
+        .fromHost(ServerInfo.SERVER_HOST)
+        .fromPort(ServerInfo.SERVER_PORT)
+        .status(ServerInfo.STATUS_OK)
+        .optionalMessageBody(gameState)
+        .build();
+    MessageSender.broadcast(clientContact.getCatalog(), gameStateMessage);
+    Integer currentIteration = gameController.getIteration();
+    ScheduledThreadPoolExecutor executor1 = new ScheduledThreadPoolExecutor(1);
+    executor1.schedule(() -> {
+      gameController.setGuessMode(true);
+      ServerMessage notif;
+      notif = ServerMessage.builder()
+          .messageHeader(ServerInfo.YOUR_TURN)
+          .fromHost(ServerInfo.SERVER_HOST)
+          .fromPort(ServerInfo.SERVER_PORT)
+          .status(ServerInfo.STATUS_OK)
+          .optionalMessageBody("Time: 30 seconds")
+          .build();
+      SocketChannel nonDisqualifiedClient = clientContact.get(gameController.getIteration());
+      while (clientContact.isDisqualified(nonDisqualifiedClient)) {
+        gameController.nextIteration();
+        if (gameController.ifGameEnds()) {
+          this.onGameEnd();
+          continue;
+        }
+        nonDisqualifiedClient = clientContact.get(gameController.getIteration());
       }
-      ScheduledThreadPoolExecutor executor1 = new ScheduledThreadPoolExecutor(1);
-      executor1.schedule(() -> {
-        gameController.setGuessMode(true);
-        ServerMessage notif;
-        notif = ServerMessage.builder()
-            .messageHeader(ServerInfo.YOUR_TURN)
-            .fromHost(ServerInfo.SERVER_HOST)
-            .fromPort(ServerInfo.SERVER_PORT)
-            .status(ServerInfo.STATUS_OK)
-            .optionalMessageBody(gameController.getGameState())
-            .build();
-        MessageSender.send(
-            clientContact.get(gameController.getIteration()),
-            notif
-        );
-      }, 2, TimeUnit.SECONDS);
-      ScheduledThreadPoolExecutor executor2 = new ScheduledThreadPoolExecutor(1);
-      f =  executor2.schedule(() -> {
-        gameController.setGuessMode(false);
-        this.onNewIteration();
-      }, 32, TimeUnit.SECONDS);
+      MessageSender.send(
+          nonDisqualifiedClient,
+          notif
+      );
+    }, 2, TimeUnit.SECONDS);
+    ScheduledThreadPoolExecutor executor2 = new ScheduledThreadPoolExecutor(1);
+    f =  executor2.schedule(() -> {
+      gameController.setGuessMode(false);
+      this.onNewIteration();
+    }, 32, TimeUnit.SECONDS);
 
 //      new Thread(() -> { // Wait 2s to send the statement
 //        try {
@@ -237,7 +285,6 @@ public class EventHandler implements IEventHandler {
 //          throw new RuntimeException(e);
 //        }
 //      }).start();
-    }
   }
 
   @Override
@@ -281,7 +328,7 @@ public class EventHandler implements IEventHandler {
   public void onGameEnd() {
     ServerMessage msg = this.onResultPublished(true);
     MessageSender.broadcast(clientContact.getCatalog(), msg);
-    gameController.reset();
+    gameController.stopGame();
     ServerMessage bye_msg = ServerMessage.builder()
         .messageHeader(ServerInfo.GAME_END)
         .fromHost(ServerInfo.SERVER_HOST)

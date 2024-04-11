@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ClientContact {
-
   private ArrayList<SocketChannel> clients = new ArrayList<>();
   private Dictionary<SocketChannel, String> names = new Hashtable<SocketChannel, String>();
+  private Dictionary<String, Boolean> blacklist = new Hashtable<String, Boolean>();
   private UserRegistrationStatus isValid(String name) {
     /*
     The nickname is composed by the following characters ‘a’...’z’, ‘A’...’Z’, ‘0’...’9’, ‘_’  and the length is not longer than 10 characters.
@@ -49,6 +49,7 @@ public class ClientContact {
     if (canAcceptNewClient()) {
       names.put(client, name);
       clients.add(client);
+      blacklist.put(name, false);
       return UserRegistrationStatus.ACCEPTED;
     }
     else {
@@ -64,9 +65,20 @@ public class ClientContact {
       while (clients.iterator().hasNext()) {
         clients.remove(clients.iterator().next());
       }
+      while (blacklist.keys().hasMoreElements()) {
+        blacklist.remove(blacklist.keys().nextElement());
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public void disqualify(SocketChannel client) {
+    blacklist.put(names.get(client), true);
+  }
+
+  public Boolean isDisqualified(SocketChannel client) {
+    return blacklist.get(names.get(client));
   }
 
   public Integer getIndex(SocketChannel client) {

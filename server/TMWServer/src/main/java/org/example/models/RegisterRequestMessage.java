@@ -34,7 +34,11 @@ public class RegisterRequestMessage extends Message {
       }
       msg.toHost = lines[1].split(":")[1].trim();
       msg.toPort = Integer.parseInt(lines[2].split(":")[1].trim());
-      msg.name = lines[3].split(":")[1].trim();
+      try {
+        msg.name = lines[3].split(":")[1].trim();
+      } catch (Exception e) {
+        throw new Exception("Invalid name format");
+      }
       return msg;
     } catch (Exception e) {
       System.out.println(e.getMessage());

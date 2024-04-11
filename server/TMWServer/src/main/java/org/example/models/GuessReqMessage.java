@@ -26,7 +26,7 @@ public class GuessReqMessage extends Message {
       @NotNull Integer toPort,
       @NotNull String gameid,
       @NotNull String name,
-      @NotNull Character guess_char,
+      @Nullable Character guess_char,
       @Nullable String guess_word
   )
   {
@@ -62,7 +62,8 @@ public class GuessReqMessage extends Message {
         msg.guess_word = lines[6].split(":")[1].trim();
       }
       catch (ArrayIndexOutOfBoundsException e) {
-        msg.guess_word = null;
+        System.out.println("No word guess");
+        msg.guess_word = "";
       }
       return msg;
     } catch (Exception e) {
