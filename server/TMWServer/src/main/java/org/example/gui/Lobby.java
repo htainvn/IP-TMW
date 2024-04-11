@@ -2,7 +2,6 @@ package org.example.gui;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import org.example.models.PlayerTable;
 import org.example.models.Registration;
 import org.example.models.RegistrationTable;
 import org.example.observer.GameObserver;
@@ -12,14 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableRowSorter;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.Arrays;
 
 import org.example.models.Player;
 import org.springframework.core.annotation.Order;
@@ -137,7 +129,7 @@ public class Lobby extends JFrame {
         Player players[] = uiObserver.getPlayers();
         this.players = new Registration[players.length];
         for (int i = 0; i < players.length; i++) {
-            this.players[i] = new Registration(i + 1, players[i].getName());
+            this.players[i] = new Registration(i + 1, players[i].getUsername());
         }
         setPlayerTable();
         updateButtons();

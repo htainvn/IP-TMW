@@ -154,8 +154,9 @@ public class InGame extends JFrame {
     }
 
     public void update() {
-        players = uiObserver.getPlayers();
+        players = gameObserver.getScoreboard();
         setPlayerTable();
+        questionTextArea.setText(gameObserver.getHint());
         highlightPlayer();
         if (!isGamePlayable()) {
             uiObserver.setPhase(3);

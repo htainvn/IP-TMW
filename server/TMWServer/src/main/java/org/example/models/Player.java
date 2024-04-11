@@ -1,13 +1,15 @@
 package org.example.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 public class Player {
+    @Getter
+    @Setter
     public int rank;
+    @Getter
     public String username;
+    @Getter
     public int point;
 
     public Player(int rank, String username, int point) {
@@ -16,15 +18,4 @@ public class Player {
         this.point = point;
     }
 
-    public int getRank() {
-        return rank;
-    }
-
-    public String getName() {
-        return username;
-    }
-
-    public int getPoint() {
-        return point;
-    }
 }

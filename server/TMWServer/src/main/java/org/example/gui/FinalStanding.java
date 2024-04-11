@@ -51,7 +51,10 @@ public class FinalStanding extends JFrame {
         initGlobalPanel();
         setContentPane(globalPanel);
 
-        players = uiObserver.getPlayers();
+        players = gameObserver.getScoreboard();
+
+        // Sort players by rank
+        Arrays.sort(players, (a, b) -> b.getRank() - a.getRank());
         setPlayerTable();
     }
 
