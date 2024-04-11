@@ -8,4 +8,8 @@ import lombok.Setter;
 public class Quiz {
   private String hint;
   private String answer;
+
+  public String getHint() {
+    return hint;
+  }
 }
