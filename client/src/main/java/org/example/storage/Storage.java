@@ -18,6 +18,8 @@ public class Storage {
     private String hint;
     private String keyword;
 
+    private Boolean isAccepted = false;
+
     private Vector<Pair<String, Integer>> scores;
 
     public Number getPoint(String name) {

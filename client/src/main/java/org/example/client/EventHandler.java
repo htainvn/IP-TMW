@@ -2,6 +2,7 @@ package org.example.client;
 
 import org.example.models.*;
 import org.example.storage.Storage;
+import org.example.util.ServerInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,11 @@ public class EventHandler implements IEventHandler {
     @Override
     public void onConnectionRespond(@NotNull ServerMessage msg) {
         System.out.println("onConnectionRespond");
+        if(Objects.equals(msg.getMessageHeader().trim(), ServerInfo.CONNECTION_ACCEPTED)) storage.setIsAccepted(true);
+        else {
+            if(storage.getIsAccepted()) return;
+            SocketClient.stillConnected = false;
+        }
     }
 
     @Override
@@ -57,7 +63,7 @@ public class EventHandler implements IEventHandler {
     public void sendRegisterRequest(@NotNull String clientName) {
         System.out.println("sendRegisterRequest");
         RegisterReqMessage registerReqMessage = new RegisterReqMessage(clientName);
-        System.out.println("sendRegisterRequest: " + registerReqMessage);
+        //System.out.println("sendRegisterRequest: " + registerReqMessage);
         MessageSender.send(SocketClient.client, registerReqMessage);
     }
 

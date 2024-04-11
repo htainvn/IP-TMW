@@ -127,7 +127,7 @@ public class InGame extends JFrame {
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int choosenOption = 0;
+                Integer choosenOption = null;
                 Character guessChar = ' ';
                 if (!keywordGuessing.getText().isEmpty()) {
                     Object[] options = {"Yes", "No"};
@@ -148,10 +148,14 @@ public class InGame extends JFrame {
                     currentCharButton = null;
                 }
 
+                if(choosenOption == null) return;
+
                 if (0 == choosenOption) {
                     // Send keyword
+                    System.out.println("In game: condition01");
                     uiObserver.sendGuess(guessChar, keywordGuessing.getText());
                 } else {
+                    System.out.println("In game: condition02");
                     uiObserver.sendGuess(guessChar, "");
 
                 }

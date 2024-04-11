@@ -16,7 +16,7 @@ import java.io.IOException;
 public class AppConfig {
 
     @Autowired
-    public AppConfig(SocketClient socketClient, GUIManager guiManager)  {
+    public AppConfig(GUIManager guiManager, SocketClient socketClient)  {
         System.out.println("AppConfig created");
         try {
             socketClient.init();

@@ -33,30 +33,46 @@ public class SocketClient implements IClient {
 
     private Selector selector;
     public static SocketChannel client;
-    private Boolean stillConnected = false;
+    public static Boolean stillConnected;
 
     private EventHandler eventHandler;
     private Validator validator;
 
     @Autowired
-    public SocketClient(EventHandler eventHandler, Validator validator) {
+    public SocketClient(EventHandler eventHandler, Validator validator) throws IOException {
+        selector = Selector.open();
+        stillConnected = false;
         this.eventHandler = eventHandler;
         this.validator = validator;
     }
 
+    private void recall() throws IOException {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        init();
+    }
+
     @Override
     public void init() throws IOException {
-        System.out.println("Initializing SocketClient");
-        selector = Selector.open();
+        //System.out.println("Initializing SocketClient: " + stillConnected);
+        if (!stillConnected) recall();
+
         while( stillConnected ) {
-            selector.select();
+
+            if(selector.selectNow() == 0) recall();
             Set<SelectionKey> selectedKeys = selector.selectedKeys();
             Iterator<SelectionKey> iterator = selectedKeys.iterator();
+
             while (iterator.hasNext() && stillConnected) {
                 SelectionKey key = iterator.next();
                 if (key.isReadable()) onMessage();
                 iterator.remove();
             }
+
+            if (!stillConnected) recall();
         }
     }
 
@@ -68,6 +84,7 @@ public class SocketClient implements IClient {
             client = SocketChannel.open(serverAddress);
             client.configureBlocking(false);
             client.register(selector, SelectionKey.OP_READ);
+            System.out.println("Selector: " + selector);
             stillConnected = true;
             System.out.println("Connected");
         } catch (IOException e) {
@@ -114,6 +131,10 @@ public class SocketClient implements IClient {
     private void resolveMessage( String raw_message ) {
 
         if(raw_message.isEmpty()) return;
+
+        System.out.println("===================================");
+        System.out.println("Type" + raw_message.trim());
+        System.out.println("==================================");
 
         try {
             MessageType messageType = Decoder.decode(raw_message);
@@ -165,7 +186,8 @@ public class SocketClient implements IClient {
     }
 
     public void sendGuess(char guessChar, String guessWord) {
-        eventHandler.sendGuessRequest(guessChar, guessWord);
+//        eventHandler.sendGuessRequest(guessChar, guessWord);
+        eventHandler.sendRegisterRequest("abcd");
     }
 
     public Boolean isConnected() {

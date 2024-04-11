@@ -20,7 +20,7 @@ public class Validator {
     }
 
     public void setupValidator( String host, Integer port ) {
-        if( host == null || host.isEmpty() ) {
+        if( connectedHost == null && host != null ) {
             connectedPort = port;
             connectedHost = host;
         }
