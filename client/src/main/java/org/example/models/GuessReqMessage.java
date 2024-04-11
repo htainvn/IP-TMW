@@ -21,7 +21,7 @@ public class GuessReqMessage extends Message {
     public GuessReqMessage(
             @NonNull String gameID,
             @NonNull String clientName,
-            @NonNull Character guessChar,
+            @Nullable Character guessChar,
             @Nullable String guessWord)
     {
         super(ClientInfo.GUESS, "localhost", Constants.SEVER_PORT);

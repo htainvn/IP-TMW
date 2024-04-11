@@ -21,6 +21,7 @@ public class Storage {
     private Vector<Pair<String, Integer>> scores;
 
     public Number getPoint(String name) {
+        if(scores == null) return -1;
         for (Pair<String, Integer> score : scores) {
             if (score.getValue0().equals(name)) {
                 return score.getValue1();

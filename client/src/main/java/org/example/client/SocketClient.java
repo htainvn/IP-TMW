@@ -6,6 +6,7 @@ import org.example.models.ServerMessage;
 import org.example.util.Decoder;
 import org.example.util.ServerInfo.MessageType;
 import lombok.NoArgsConstructor;
+import org.example.util.Validator;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,19 +36,18 @@ public class SocketClient implements IClient {
     private Boolean stillConnected = false;
 
     private EventHandler eventHandler;
+    private Validator validator;
 
     @Autowired
-    public SocketClient(EventHandler eventHandler) {
+    public SocketClient(EventHandler eventHandler, Validator validator) {
         this.eventHandler = eventHandler;
-//        System.out.println("GUI created");
+        this.validator = validator;
     }
 
     @Override
     public void init() throws IOException {
         System.out.println("Initializing SocketClient");
         selector = Selector.open();
-        // connect();
-//        sendRegister("lvphuc21");
         while( stillConnected ) {
             selector.select();
             Set<SelectionKey> selectedKeys = selector.selectedKeys();
@@ -74,11 +74,13 @@ public class SocketClient implements IClient {
             System.out.println("Could not connect to " + serverAddress);
             throw new RuntimeException(e);
         }
+        validator.setupValidator(dest, Integer.valueOf(port));
     }
 
     @Override
     public void stop() throws IOException {
         System.out.println("GUI stopped");
+        validator.resetValidator();
         stillConnected = false;
         client.close();
     }
@@ -115,7 +117,7 @@ public class SocketClient implements IClient {
 
         try {
             MessageType messageType = Decoder.decode(raw_message);
-            //System.out.println("onMessage: " + messageType);
+            if(!validator.validate(raw_message)) {return;}
 
             switch (Objects.requireNonNull(messageType)) {
                 case DISCONNECTED:

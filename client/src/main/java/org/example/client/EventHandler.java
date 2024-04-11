@@ -61,7 +61,7 @@ public class EventHandler implements IEventHandler {
         MessageSender.send(SocketClient.client, registerReqMessage);
     }
 
-    public void sendGuessRequest(@NotNull char guessChar, String guessWord) {
+    public void sendGuessRequest( char guessChar, String guessWord) {
         System.out.println("sendGuessRequest");
         GuessReqMessage guessReqMessage = new GuessReqMessage(storage.getGameID(), storage.getClientName(), guessChar, guessWord);
         MessageSender.send(SocketClient.client, guessReqMessage);

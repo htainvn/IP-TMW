@@ -445,7 +445,7 @@ public class InGame extends JFrame {
     }
 
     private void setPlayerTable() {
-        Vector<Pair<String, Integer>> scores = storage.getScores();
+        Vector<Pair<String, Integer>> scores = storage.getScores() == null ? new Vector<>() : storage.getScores();
         playerTable.setModel(new PlayerTableModel(scores));
     }
 
