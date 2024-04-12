@@ -5,12 +5,17 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.util.ServerInfo;
 import org.example.util.ServerInfo.UserRegistrationStatus;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ClientContact {
+  @Getter
+  @Setter
+  private Integer expectedClient = 0;
   private ArrayList<SocketChannel> clients = new ArrayList<>();
   private Dictionary<SocketChannel, String> names = new Hashtable<SocketChannel, String>();
   private Dictionary<String, Boolean> blacklist = new Hashtable<String, Boolean>();
@@ -68,6 +73,7 @@ public class ClientContact {
       while (blacklist.keys().hasMoreElements()) {
         blacklist.remove(blacklist.keys().nextElement());
       }
+      expectedClient = 0;
     } catch (Exception e) {
       e.printStackTrace();
     }

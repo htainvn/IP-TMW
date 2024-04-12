@@ -47,5 +47,6 @@ public class ServerInfo {
   public enum MessageType {
     REGISTER,
     GUESS,
+    DISCONNECT
   }
 }

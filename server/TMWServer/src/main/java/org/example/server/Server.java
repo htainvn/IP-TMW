@@ -152,7 +152,9 @@ public class Server implements IServer {
       }
       MessageSender.send(client, resp);
       if (resp.getOptionalMessageBody().equals("Correct guess") ||
-          resp.getOptionalMessageBody().equals("Incorrect guess")
+          (resp.getOptionalMessageBody().equals("Incorrect guess") ||
+              resp.getMessageHeader().equals(ServerInfo.WINNER_ANNOUNCE) ||
+              resp.getMessageHeader().equals(ServerInfo.DISQUALIFY_ANNOUNCE))
       ) {
         eventHandler.onGuessBeforeTimeUp();
       }
@@ -173,6 +175,9 @@ public class Server implements IServer {
             .build();
       }
       MessageSender.send(client, resp);
+    }
+    else if (messageType == MessageType.DISCONNECT) {
+      this.disconnectClient(client);
     }
 
   }

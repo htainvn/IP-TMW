@@ -142,7 +142,13 @@ public class InGame extends JFrame {
     }
 
     private void highlightPlayer() {
-        int playerIndex = gameObserver.getCurrentIteration();
+        int playerIndex;
+        try {
+            playerIndex = gameObserver.getCurrentIteration() % players.length;
+        } catch (ArithmeticException e) {
+            playerIndex = 0;
+            return;
+        }
         if (playerIndex < 0) {
             return;
         }

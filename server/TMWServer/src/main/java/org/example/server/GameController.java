@@ -5,6 +5,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Objects;
 import java.util.Scanner;
@@ -21,7 +22,13 @@ public class GameController {
   @Getter
   @Setter
   private Integer numPlayer = 0;
+
+  @Getter
+  @Setter
   private Integer round = 0;
+
+  @Getter
+  private Boolean playerChanged = Boolean.FALSE;
 
   private Integer iteration = -1;
 
@@ -128,8 +135,13 @@ public class GameController {
   }
 
   public void nextIteration() {
-    if (!isCharacterRevealed) iteration++;
-    iteration %= numPlayer;
+    if (!isCharacterRevealed) {
+      iteration++;
+      playerChanged = Boolean.TRUE;
+    }
+    else {
+      playerChanged = Boolean.FALSE;
+    }
     setCharacterRevealedMode(false);
     inGuessingCountdown = false;
   }
@@ -143,9 +155,11 @@ public class GameController {
   public void stopGame() {
     iteration = -1;
     numPlayer = 0;
+    round = 0;
     isGamePlayable = false;
     isCharacterRevealed = true;
     inGuessingCountdown = false;
+    currentWord = new ArrayList<>();
   }
 
   public Boolean isGamePlayable() { return isGamePlayable; }
@@ -158,7 +172,8 @@ public class GameController {
   public String getGameState() {
     return "GameID: " + gameid + "\r\n"
         + "Hint: " + quiz.getHint() + "\r\n"
-        + "Current: " + currentWord + "\r\n";
+        + "Current: " + currentWord + "\r\n"
+        + "Player: " + iteration % numPlayer + "\r\n";
   }
 
   public Boolean ifGameEnds() {
@@ -170,7 +185,12 @@ public class GameController {
       return false;
     }
      */
-    return iteration > 5 || currentWord.toString().equals(quiz.getAnswer());
+    String currentWordStr = "";
+    for (Character c : currentWord) {
+      currentWordStr += c;
+    }
+    Boolean ifKeywordsGuessed = currentWordStr.equals(quiz.getAnswer());
+    return getRound() >= 5 || ifKeywordsGuessed;
   }
 
   public void setNewRound() {

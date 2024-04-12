@@ -108,20 +108,21 @@ public class EventHandler implements IEventHandler {
           .optionalMessageBody("You are not registered")
           .build();
     }
-    if (!Objects.equals(msg.getGameid(), gameController.getGameid())) {
-      return ServerMessage.builder()
-          .messageHeader(ServerInfo.GUESS_REJECTED)
-          .fromHost(ServerInfo.SERVER_HOST)
-          .fromPort(ServerInfo.SERVER_PORT)
-          .status(ServerInfo.STATUS_ERROR)
-          .optionalMessageBody("Invalid game id")
-          .build();
-    }
+//    if (!Objects.equals(msg.getGameid(), gameController.getGameid())) {
+//      return ServerMessage.builder()
+//          .messageHeader(ServerInfo.GUESS_REJECTED)
+//          .fromHost(ServerInfo.SERVER_HOST)
+//          .fromPort(ServerInfo.SERVER_PORT)
+//          .status(ServerInfo.STATUS_ERROR)
+//          .optionalMessageBody("Invalid game id")
+//          .build();
+//    }
+    System.out.println("Expected client: " + clientContact.getExpectedClient() + " Current client: " + clientContact.getIndex(client));
     if (!Objects.equals(
         msg.getName(),
         clientContact.getName(
             clientContact.get(
-                gameController.getIteration()
+                clientContact.getExpectedClient()
             )
         )
     )) {
@@ -133,7 +134,7 @@ public class EventHandler implements IEventHandler {
           .optionalMessageBody("You are not yet allowed to guess")
           .build();
     }
-
+    System.out.println("Guessing: " + msg.getGuess_char());
     if (!gameController.isPlayersAllowedToGuess()) {
       return ServerMessage.builder()
               .messageHeader(ServerInfo.GUESS_REJECTED)
@@ -144,7 +145,7 @@ public class EventHandler implements IEventHandler {
               .build();
     }
 
-    if (gameController.getIteration() > 2 && !msg.getGuess_word().isEmpty()) {
+    if (gameController.getRound() >= 2 && !msg.getGuess_word().isEmpty()) {
       Boolean isCorrect = gameController.guessKeyword(msg.getGuess_word());
       if (isCorrect) {
         scoreBoard.updateScore(
@@ -205,28 +206,22 @@ public class EventHandler implements IEventHandler {
   public void onNewIteration() {
     f = null;
     gameController.nextIteration();
+    clientContact.setExpectedClient(gameController.getIteration());
     Integer maxIteration = clientContact.getNumberOfClients();
+    if (gameController.getPlayerChanged()) {
+      gameController.setRound(gameController.getRound() + 1);
+    }
+    System.out.println("Current round: " + gameController.getRound());
     if (gameController.ifGameEnds()) {
       this.onGameEnd();
       return;
     }
-    if (gameController.getIteration() != ServerInfo.STARTING_ITERATION) {
+    if (gameController.getRound() != ServerInfo.STARTING_ITERATION) {
       ServerMessage msg = this.onResultPublished(false);
       MessageSender.broadcast(clientContact.getCatalog(), msg);
     }
-    String gameState = gameController.getGameState();
-    ServerMessage gameStateMessage = ServerMessage.builder()
-        .messageHeader(ServerInfo.GAME_STATE)
-        .fromHost(ServerInfo.SERVER_HOST)
-        .fromPort(ServerInfo.SERVER_PORT)
-        .status(ServerInfo.STATUS_OK)
-        .optionalMessageBody(gameState)
-        .build();
-    MessageSender.broadcast(clientContact.getCatalog(), gameStateMessage);
-    Integer currentIteration = gameController.getIteration();
     ScheduledThreadPoolExecutor executor1 = new ScheduledThreadPoolExecutor(1);
     executor1.schedule(() -> {
-      gameController.setGuessMode(true);
       ServerMessage notif;
       notif = ServerMessage.builder()
           .messageHeader(ServerInfo.YOUR_TURN)
@@ -235,15 +230,28 @@ public class EventHandler implements IEventHandler {
           .status(ServerInfo.STATUS_OK)
           .optionalMessageBody("Time: 30 seconds")
           .build();
+      int maxTry = 0;
       SocketChannel nonDisqualifiedClient = clientContact.get(gameController.getIteration());
-      while (clientContact.isDisqualified(nonDisqualifiedClient)) {
+      while (clientContact.isDisqualified(nonDisqualifiedClient) && maxTry < maxIteration) {
         gameController.nextIteration();
-        if (gameController.ifGameEnds()) {
-          this.onGameEnd();
-          continue;
-        }
         nonDisqualifiedClient = clientContact.get(gameController.getIteration());
+        clientContact.setExpectedClient(gameController.getIteration());
+        maxTry++;
       }
+      if (maxTry >= maxIteration) {
+        this.onGameEnd();
+        return;
+      }
+      gameController.setGuessMode(true);
+      String gameState = gameController.getGameState();
+      ServerMessage gameStateMessage = ServerMessage.builder()
+          .messageHeader(ServerInfo.GAME_STATE)
+          .fromHost(ServerInfo.SERVER_HOST)
+          .fromPort(ServerInfo.SERVER_PORT)
+          .status(ServerInfo.STATUS_OK)
+          .optionalMessageBody(gameState)
+          .build();
+      MessageSender.broadcast(clientContact.getCatalog(), gameStateMessage);
       MessageSender.send(
           nonDisqualifiedClient,
           notif
@@ -343,10 +351,11 @@ public class EventHandler implements IEventHandler {
     MessageSender.broadcast(clientContact.getCatalog(), bye_msg);
     clientContact.reset();
     scoreBoard.reset();
+    gameController.newGame();
   }
 
   public void onGuessBeforeTimeUp() {
-    f.cancel(true);
+    if (f != null) f.cancel(true);
     gameController.setGuessMode(false);
     this.onNewIteration();
   }
