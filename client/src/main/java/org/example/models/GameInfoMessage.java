@@ -17,6 +17,7 @@ public class GameInfoMessage extends ServerMessage {
     protected String gameID;
     protected String clientName;
     protected String gameOrder;
+    protected String[] allClientNames;
 
     public static @Nullable GameInfoMessage fromString(@NotNull String message) {
 
@@ -41,6 +42,7 @@ public class GameInfoMessage extends ServerMessage {
                     msg.gameID = lines[4].split(":")[2].trim();
                     msg.clientName = lines[5].split(":")[1].trim();
                     msg.gameOrder = lines[6].split(":")[1].trim();
+                    msg.allClientNames = lines[7].split(":")[1].split(",");
                 }
             } catch (Exception e) {
                 msg.gameID = "null";

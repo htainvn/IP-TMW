@@ -40,6 +40,7 @@ public class EventHandler implements IEventHandler {
         storage.setGameID(msg.getGameID());
         storage.setClientName(msg.getClientName());
         storage.setGameOrder(Integer.valueOf(msg.getGameOrder()));
+        storage.setInitialScores(msg.getAllClientNames());
     }
 
     @Override
@@ -58,7 +59,7 @@ public class EventHandler implements IEventHandler {
     @Override
     public void onTurn() {
         System.out.println("onTurn");
-        sendGuessRequest('o', "Address Resolution Protocol");
+//        sendGuessRequest('o', "Address Resolution Protocol");
     }
 
     public void sendRegisterRequest(@NotNull String clientName) {

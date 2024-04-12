@@ -36,7 +36,13 @@ public class GameStateMessage extends ServerMessage {
                 if (lines.length > ServerInfo.SERVER_MESSAGE_LENGTH) {
                     msg.gameID = lines[4].split(":")[2].trim();
                     msg.hint = lines[5].split(":")[1].trim();
-                    msg.currentKeyword = lines[6].split(":")[1].trim();
+                    String tmp = lines[6].split(":")[1].trim();
+                    msg.currentKeyword = "";
+                    for (int i = 1; i < tmp.length(); i += 3) {
+                        msg.currentKeyword += tmp.charAt(i);
+                    }
+                    msg.currentKeyword = msg.currentKeyword.toUpperCase();
+                    System.out.println("Current keyword: " + msg.currentKeyword);
                 }
             } catch (Exception e) {
                 msg.gameID = "null";

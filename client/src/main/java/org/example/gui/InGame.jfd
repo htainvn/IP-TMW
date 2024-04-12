@@ -35,26 +35,6 @@ new FormModel {
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "West"
 					} )
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
-						name: "myTurnDisplay"
-						"autoscrolls": true
-						"background": new java.awt.Color( 48, 43, 5, 255 )
-						"minimumSize": new java.awt.Dimension( 200, 27 )
-						"opaque": false
-						"preferredSize": new java.awt.Dimension( 200, 27 )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "myTurnLabel"
-							"font": new com.jformdesigner.model.SwingDerivedFont( null, 196608, 0, true )
-							"text": "My turn:"
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "myTurnText"
-							"focusable": false
-							"text": "325"
-						} )
-					}, new FormLayoutConstraints( class java.lang.String ) {
-						"value": "Center"
-					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
 						"alignment": 2
 					} ) {

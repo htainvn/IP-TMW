@@ -6,10 +6,11 @@ package org.example.gui;
 
 import com.jgoodies.forms.factories.CC;
 import com.jgoodies.forms.layout.FormLayout;
-import org.example.observer.ConnectingPhase;
+import org.example.observer.Phase;
 import org.example.observer.ConnectingState;
 import org.example.observer.GameObserver;
 import org.example.observer.UIObserver;
+import org.example.storage.Storage;
 import org.jdesktop.swingx.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,15 +26,17 @@ import java.awt.*;
 public class Registration extends JFrame {
     private UIObserver uiObserver;
     private GameObserver gameObserver;
+    private Storage storage;
     private Dialog connectingDialog;
     @Autowired
-    public Registration(UIObserver uiObserver, GameObserver gameObserver) {
+    public Registration(UIObserver uiObserver, GameObserver gameObserver, Storage storage) {
         this.uiObserver = uiObserver;
         this.gameObserver = gameObserver;
+        this.storage = storage;
 
         initComponents();
         initButtons();
-        setVisible(true);
+        setVisible(false);
         progressBar.setVisible(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("The Magic Wheel - Registration");
@@ -62,10 +65,10 @@ public class Registration extends JFrame {
             connectingDialog.setVisible(false);
             setVisible(false);
             JOptionPane.showMessageDialog(null, "Connected to server", "Success", JOptionPane.INFORMATION_MESSAGE);
-
             String name = JOptionPane.showInputDialog("Enter your name: ");
             uiObserver.setUsername(name);
-            uiObserver.setCurrentPhase(ConnectingPhase.IN_GAME);
+            storage.setClientName(name);
+            uiObserver.setCurrentPhase(Phase.LOBBY);
         } else if (uiObserver.getCurrentState() == ConnectingState.FAILED) {
             uiObserver.setCurrentState(ConnectingState.WAITING);
             connectingDialog.setVisible(false);

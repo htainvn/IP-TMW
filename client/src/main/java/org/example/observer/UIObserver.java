@@ -19,7 +19,7 @@ public class UIObserver {
 
     @Getter
     @Setter
-    Enum<ConnectingPhase> currentPhase = ConnectingPhase.REGISTRATION;
+    Enum<Phase> currentPhase = Phase.REGISTRATION;
 
     @Getter
     @Setter
@@ -55,8 +55,8 @@ public class UIObserver {
 
     public void setUsername(String username) {
         socketClient.sendRegister(username);
-    }
 
+    }
     public void sendGuess(char guessChar, String guessWord) {
         socketClient.sendGuess(guessChar, guessWord);
     }

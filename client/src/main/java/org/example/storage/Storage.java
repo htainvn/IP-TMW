@@ -40,4 +40,11 @@ public class Storage {
         }
         return -1;
     }
+
+    public void setInitialScores(String[] players) {
+        scores = new Vector<>();
+        for (String player : players) {
+            scores.add(new Pair<>(player, 0));
+        }
+    }
 }

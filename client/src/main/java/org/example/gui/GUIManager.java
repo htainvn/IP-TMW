@@ -1,7 +1,7 @@
 package org.example.gui;
 
 import org.example.observer.GameObserver;
-import org.example.observer.ConnectingPhase;
+import org.example.observer.Phase;
 import org.example.observer.UIObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,7 +15,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
 
-import org.example.models.Player;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -27,23 +26,30 @@ public class GUIManager {
     private UIObserver uiObserver;
     @Autowired
     private GameObserver gameObserver;
-    private Player[] players;
     @Autowired
     private FinalStanding finalStanding;
     @Autowired
     private InGame inGame;
     @Autowired
     private Registration registration;
+    @Autowired
+    private Lobby lobby;
     private Object currentPhase;
 
     @Autowired
-    public GUIManager(Registration registration, InGame inGame, FinalStanding finalStanding) {
+    public GUIManager(Registration registration, InGame inGame, FinalStanding finalStanding, Lobby lobby, UIObserver uiObserver, GameObserver gameObserver) {
         this.registration = registration;
         this.inGame = inGame;
         this.finalStanding = finalStanding;
+        this.lobby = lobby;
+
+        this.uiObserver = uiObserver;
+        this.gameObserver = gameObserver;
 
         initFont();
         currentPhase = registration;
+//        uiObserver.setCurrentPhase(Phase.IN_GAME);
+//        gameStart();
         gameRegistration();
         this.update();
     }
@@ -81,6 +87,7 @@ public class GUIManager {
         ((JFrame) currentPhase).setVisible(false);
         currentPhase = inGame;
         inGame.setVisible(true);
+        inGame.initData();
     }
 
     public void gameFinished() {
@@ -105,21 +112,30 @@ public class GUIManager {
         registration.setVisible(true);
     }
 
+    public void gameLobby() {
+        ((JFrame) currentPhase).setVisible(false);
+        currentPhase = lobby;
+        lobby.setVisible(true);
+    }
+
     public void update() {
         new Thread(() -> {
             Integer time = 0;
             while (true) {
                 try {
                     Thread.sleep(100);
-                    if (uiObserver.getCurrentPhase().equals(ConnectingPhase.REGISTRATION)) {
+                    if (uiObserver.getCurrentPhase().equals(Phase.REGISTRATION)) {
                         gameRegistration();
-                        uiObserver.setCurrentPhase(ConnectingPhase.NONE);
-                    } else if (uiObserver.getCurrentPhase().equals(ConnectingPhase.IN_GAME)) {
+                        uiObserver.setCurrentPhase(Phase.NONE);
+                    } else if (uiObserver.getCurrentPhase().equals(Phase.IN_GAME)) {
                         gameStart();
-                        uiObserver.setCurrentPhase(ConnectingPhase.NONE);
-                    } else if (uiObserver.getCurrentPhase().equals(ConnectingPhase.GAME_FINISHED)) {
+                        uiObserver.setCurrentPhase(Phase.NONE);
+                    } else if (uiObserver.getCurrentPhase().equals(Phase.GAME_FINISHED)) {
                         gameFinished();
-                        uiObserver.setCurrentPhase(ConnectingPhase.NONE);
+                        uiObserver.setCurrentPhase(Phase.NONE);
+                    } else if (uiObserver.getCurrentPhase().equals(Phase.LOBBY)) {
+                        gameLobby();
+                        uiObserver.setCurrentPhase(Phase.NONE);
                     }
 
                     if (currentPhase instanceof FinalStanding) {
@@ -134,10 +150,11 @@ public class GUIManager {
                             ((InGame) currentPhase).update();
                         } else if (currentPhase instanceof FinalStanding) {
                             ((FinalStanding) currentPhase).update(finalTime);
-                        } else {
+                        } else if (currentPhase instanceof Registration) {
                             ((Registration) currentPhase).update();
+                        } else if (currentPhase instanceof Lobby) {
+                            ((Lobby) currentPhase).update();
                         }
-
                     });
                 } catch (InterruptedException | InvocationTargetException e) {
                     e.printStackTrace();

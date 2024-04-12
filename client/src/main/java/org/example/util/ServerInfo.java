@@ -27,7 +27,7 @@ public class ServerInfo {
 
     public static final String DISCONNECTED = "DISCONNECTED";
 
-    public static final Integer SERVER_MESSAGE_LENGTH = 5;
+    public static final Integer SERVER_MESSAGE_LENGTH = 6;
 
     public enum MessageType {
         CONNECTION,

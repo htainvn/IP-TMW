@@ -38,7 +38,7 @@ public class InGame extends JFrame {
     private JTable playerTable;
     private UIObserver uiObserver;
     private Storage storage;
-    private JDialog waitingDialog;
+    private JOptionPane confirmDialog;
 
     private void createUIComponents() {
         // TODO: add custom component creation code here
@@ -47,6 +47,7 @@ public class InGame extends JFrame {
         initCharPanel();
         initGuessPanel();
         initPlayerTable();
+        confirmDialog = new JOptionPane();
         username.setText(storage.getClientName());
 
         StyledDocument documentStyle = hintText.getStyledDocument();
@@ -55,13 +56,19 @@ public class InGame extends JFrame {
         documentStyle.setParagraphAttributes(0, documentStyle.getLength(), centerAttribute, false);
         timerFill();
     }
+    
+    public void initData() {
+        setHint();
+        username.setText(storage.getClientName());
+    }
 
     public void setKeyword() {
 
         String keyword = storage.getKeyword() == null ? "Hello World" : storage.getKeyword();
-
+//        keyword = "______________________________";
+        System.out.println("Keyword Ingame: " + keyword);
         keywordPanel.removeAll();
-        keywordPanel.setLayout(new GridLayout(Math.floorDiv(keyword.length(), WORDS_PER_ROW), min(WORDS_PER_ROW, keyword.length())));
+        keywordPanel.setLayout(new GridLayout((int) Math.ceil((float)keyword.length() / (float)WORDS_PER_ROW), min(WORDS_PER_ROW, keyword.length())));
 //        keywordPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 //        keywordPanel.setPreferredSize(new Dimension(BUTTON_SIZE * wordsPerRow, 300));
 
@@ -121,6 +128,9 @@ public class InGame extends JFrame {
         playerTable.setFillsViewportHeight(true);
         playerTable.setFont(new Font("SF Pro Display Regular", Font.PLAIN, 18));
         playerTable.setRowHeight(30);
+
+        playerPanel.removeAll();
+        playerPanel.add(new JScrollPane(playerTable));
     }
 
     private void initGuessPanel() {
@@ -131,7 +141,7 @@ public class InGame extends JFrame {
                 Character guessChar = ' ';
                 if (!keywordGuessing.getText().isEmpty()) {
                     Object[] options = {"Yes", "No"};
-                    choosenOption = JOptionPane.showOptionDialog(InGame.this,
+                    choosenOption = confirmDialog.showOptionDialog(InGame.this,
                             "Would you like to send keyword?",
                             "Send keyword",
                             JOptionPane.YES_NO_OPTION,
@@ -172,9 +182,6 @@ public class InGame extends JFrame {
         usernameDisplay = new JPanel();
         usernameLabel = new JLabel();
         username = new JLabel();
-        myTurnDisplay = new JPanel();
-        myTurnLabel = new JLabel();
-        myTurnText = new JLabel();
         pointDisplay = new JPanel();
         pointLabel = new JLabel();
         point = new JLabel();
@@ -193,13 +200,13 @@ public class InGame extends JFrame {
         //======== overallPanel ========
         {
             overallPanel.setName("overallPanel");
-            overallPanel.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax
-            .swing.border.EmptyBorder(0,0,0,0), "JF\u006frm\u0044es\u0069gn\u0065r \u0045va\u006cua\u0074io\u006e",javax.swing
-            .border.TitledBorder.CENTER,javax.swing.border.TitledBorder.BOTTOM,new java.awt.
-            Font("D\u0069al\u006fg",java.awt.Font.BOLD,12),java.awt.Color.red
-            ),overallPanel. getBorder()));overallPanel. addPropertyChangeListener(new java.beans.PropertyChangeListener(){@Override
-            public void propertyChange(java.beans.PropertyChangeEvent e){if("\u0062or\u0064er".equals(e.getPropertyName(
-            )))throw new RuntimeException();}});
+            overallPanel.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new javax
+            . swing. border .EmptyBorder ( 0, 0 ,0 , 0) ,  "JF\u006frmDes\u0069gner \u0045valua\u0074ion" , javax. swing
+            .border . TitledBorder. CENTER ,javax . swing. border .TitledBorder . BOTTOM, new java. awt .
+            Font ( "D\u0069alog", java .awt . Font. BOLD ,12 ) ,java . awt. Color .red
+            ) ,overallPanel. getBorder () ) ); overallPanel. addPropertyChangeListener( new java. beans .PropertyChangeListener ( ){ @Override
+            public void propertyChange (java . beans. PropertyChangeEvent e) { if( "\u0062order" .equals ( e. getPropertyName (
+            ) ) )throw new RuntimeException( ) ;} } );
             overallPanel.setLayout(new BorderLayout());
 
             //======== globalPanel ========
@@ -235,30 +242,6 @@ public class InGame extends JFrame {
                         usernameDisplay.add(username);
                     }
                     userInfoPanel.add(usernameDisplay, BorderLayout.WEST);
-
-                    //======== myTurnDisplay ========
-                    {
-                        myTurnDisplay.setAutoscrolls(true);
-                        myTurnDisplay.setBackground(new Color(0x302b05));
-                        myTurnDisplay.setMinimumSize(new Dimension(200, 27));
-                        myTurnDisplay.setOpaque(false);
-                        myTurnDisplay.setPreferredSize(new Dimension(200, 27));
-                        myTurnDisplay.setName("myTurnDisplay");
-                        myTurnDisplay.setLayout(new FlowLayout());
-
-                        //---- myTurnLabel ----
-                        myTurnLabel.setFont(myTurnLabel.getFont().deriveFont(Font.PLAIN));
-                        myTurnLabel.setText("My turn:");
-                        myTurnLabel.setName("myTurnLabel");
-                        myTurnDisplay.add(myTurnLabel);
-
-                        //---- myTurnText ----
-                        myTurnText.setFocusable(false);
-                        myTurnText.setText("325");
-                        myTurnText.setName("myTurnText");
-                        myTurnDisplay.add(myTurnText);
-                    }
-                    userInfoPanel.add(myTurnDisplay, BorderLayout.CENTER);
 
                     //======== pointDisplay ========
                     {
@@ -326,7 +309,7 @@ public class InGame extends JFrame {
                     hintText.setFont(hintText.getFont().deriveFont(14f));
                     hintText.setMargin(new Insets(0, 3, 0, 3));
                     hintText.setOpaque(false);
-                    hintText.setText("Waiting for other players to join...");
+                    hintText.setText("AFSDFSADDDDDDDDDDDDDDDDDDDDDDDD SADFASDFSADFSA  AS DFSA DFSADFASDF AS ASD FSADFASF ");
                     hintText.setName("hintText");
                     guessingPanel.add(hintText, new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0,
                         GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -426,9 +409,6 @@ public class InGame extends JFrame {
     private JPanel usernameDisplay;
     private JLabel usernameLabel;
     private JLabel username;
-    private JPanel myTurnDisplay;
-    private JLabel myTurnLabel;
-    private JLabel myTurnText;
     private JPanel pointDisplay;
     private JLabel pointLabel;
     private JLabel point;
@@ -457,6 +437,10 @@ public class InGame extends JFrame {
         setKeyword();
         setPoint();
         setPlayerTable();
+    }
+
+    private void setHint() {
+        hintText.setText(storage.getHint());
     }
 
     @Autowired
