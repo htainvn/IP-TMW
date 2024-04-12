@@ -105,9 +105,10 @@ public class GameController {
 
   public Boolean guessCharacter(Character c) {
     boolean found = false;
+    c = Character.toLowerCase(c);
     for (int i = 0; i < currentWord.size(); i++) {
       if (currentWord.get(i) == '_') {
-        if (quiz.getAnswer().charAt(i) == c) {
+        if (Character.toLowerCase(quiz.getAnswer().charAt(i)) == c) {
           found = true;
           currentWord.set(i, c);
         }
