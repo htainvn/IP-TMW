@@ -3,6 +3,7 @@ package org.example.models;
 import lombok.*;
 import org.example.util.ClientInfo;
 import org.example.util.Constants;
+import org.example.util.Validator;
 
 @Getter
 @NoArgsConstructor
@@ -11,7 +12,7 @@ public class RegisterReqMessage extends Message {
     protected String clientName;
 
     public RegisterReqMessage(@NonNull String clientName) {
-        super(ClientInfo.REGISTER, Constants.SERVER_IP, Constants.SEVER_PORT);
+        super(ClientInfo.REGISTER, Validator.connectedHost, Validator.connectedPort);
         this.clientName = clientName;
     }
 

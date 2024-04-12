@@ -1,5 +1,6 @@
 package org.example.client;
 
+import lombok.Getter;
 import org.example.models.*;
 import org.example.util.Decoder;
 import org.example.util.ServerInfo.MessageType;

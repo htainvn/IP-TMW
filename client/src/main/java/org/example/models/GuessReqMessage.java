@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.example.util.ClientInfo;
 import org.example.util.Constants;
+import org.example.util.Validator;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
@@ -24,7 +25,7 @@ public class GuessReqMessage extends Message {
             @Nullable Character guessChar,
             @Nullable String guessWord)
     {
-        super(ClientInfo.GUESS, "localhost", Constants.SEVER_PORT);
+        super(ClientInfo.GUESS, Validator.connectedHost, Validator.connectedPort);
         this.gameID = gameID;
         this.clientName = clientName;
         this.guessChar = guessChar;

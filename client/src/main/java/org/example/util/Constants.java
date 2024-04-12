@@ -11,7 +11,7 @@ public class Constants {
 
     // SEVER CONSTANTS
     public static final int SEVER_PORT = 7777;
-    public static final String SERVER_IP = "127.0.0.1";
+    public static final String SERVER_IP = "localhost";
 
     private Constants() {}
 }

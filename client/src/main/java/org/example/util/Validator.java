@@ -11,8 +11,8 @@ import java.util.Objects;
 @Component
 public class Validator {
 
-    private String connectedHost;
-    private Integer connectedPort;
+    public static String connectedHost;
+    public static Integer connectedPort;
 
     public void resetValidator() {
         connectedHost = null;
