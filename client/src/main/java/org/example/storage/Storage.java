@@ -19,6 +19,9 @@ public class Storage {
     private String keyword;
     private Integer time;
 
+    private Integer currentPlayer;
+    private Boolean isDisqualified = false;
+
     private Boolean isAccepted = false;
 
     private Vector<Pair<String, Integer>> scores;
@@ -33,6 +36,8 @@ public class Storage {
         keyword = null;
         scores = null;
         time = null;
+        currentPlayer = null;
+        isDisqualified = false;
     }
 
     public Number getPoint(String name) {

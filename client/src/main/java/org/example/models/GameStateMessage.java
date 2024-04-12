@@ -13,6 +13,7 @@ public class GameStateMessage extends ServerMessage {
     protected String gameID;
     protected String hint;
     protected String currentKeyword;
+    protected Integer currentPlayer;
 
     public static @Nullable GameStateMessage fromString(@NotNull String message) {
 
@@ -43,11 +44,13 @@ public class GameStateMessage extends ServerMessage {
                     }
                     msg.currentKeyword = msg.currentKeyword.toUpperCase();
                     System.out.println("Current keyword: " + msg.currentKeyword);
+                    msg.currentPlayer = Integer.parseInt(lines[7].split(":")[1].trim());
                 }
             } catch (Exception e) {
                 msg.gameID = "null";
                 msg.hint = "null";
                 msg.currentKeyword = "null";
+                msg.currentPlayer = null;
             }
 
             return msg;

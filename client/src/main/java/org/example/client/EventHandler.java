@@ -84,6 +84,7 @@ public class EventHandler implements IEventHandler {
 
     public void onDisqualifyAnnounce(@NotNull ServerMessage serverMessage) {
         System.out.println("onDisqualifyAnnounce");
+        storage.setIsDisqualified(true);
     }
 
     public void onGameState(@NotNull GameStateMessage gameStateMessage) {
@@ -92,5 +93,6 @@ public class EventHandler implements IEventHandler {
         storage.setGameID(gameStateMessage.getGameID());
         storage.setHint(gameStateMessage.getHint());
         storage.setKeyword(gameStateMessage.getCurrentKeyword());
+        storage.setCurrentPlayer(gameStateMessage.getCurrentPlayer());
     }
 }
