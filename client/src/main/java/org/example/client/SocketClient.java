@@ -97,7 +97,7 @@ public class SocketClient implements IClient {
     public void stop() throws IOException {
         System.out.println("GUI stopped");
         validator.resetValidator();
-        stillConnected = false;
+//        stillConnected = false;
         client.close();
     }
 

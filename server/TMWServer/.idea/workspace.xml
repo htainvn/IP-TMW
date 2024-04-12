@@ -4,7 +4,48 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f4e28650-f26f-4ec5-9369-329116d07472" name="Changes" comment="" />
+    <list default="true" id="f4e28650-f26f-4ec5-9369-329116d07472" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-Black.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-BlackItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-Bold.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-BoldItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-Heavy.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-HeavyItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-Light.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-LightItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-Medium.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-MediumItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-Regular.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-RegularItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-Semibold.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-SemiboldItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-Thin.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-ThinItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-Ultralight.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../client/src/main/resources/fonts/SF-Pro-Display-UltralightItalic.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/.gradle/8.5/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/.gradle/8.5/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/.gradle/8.5/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/.gradle/8.5/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/.gradle/8.5/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/.gradle/8.5/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/.gradle/8.5/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/.gradle/8.5/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/.gradle/8.5/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/.gradle/8.5/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/src/main/java/org/example/client/EventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/src/main/java/org/example/client/EventHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/src/main/java/org/example/client/SocketClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/src/main/java/org/example/client/SocketClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/src/main/java/org/example/gui/FinalStanding.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/src/main/java/org/example/gui/FinalStanding.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/src/main/java/org/example/gui/FinalStanding.jfd" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/src/main/java/org/example/gui/FinalStanding.jfd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/src/main/java/org/example/gui/GUIManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/src/main/java/org/example/gui/GUIManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/src/main/java/org/example/gui/InGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/src/main/java/org/example/gui/InGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/src/main/java/org/example/gui/Lobby.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/src/main/java/org/example/gui/Lobby.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/src/main/java/org/example/gui/Registration.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/src/main/java/org/example/gui/Registration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/src/main/java/org/example/models/RankingAnnounce.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/src/main/java/org/example/models/RankingAnnounce.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/src/main/java/org/example/observer/ConnectingState.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/src/main/java/org/example/observer/ConnectingState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/src/main/java/org/example/observer/UIObserver.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/src/main/java/org/example/observer/UIObserver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/src/main/java/org/example/storage/GamePhase.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/src/main/java/org/example/storage/GamePhase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/src/main/java/org/example/storage/Storage.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/src/main/java/org/example/storage/Storage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../client/src/main/java/org/example/util/ServerInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../client/src/main/java/org/example/util/ServerInfo.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -30,25 +71,25 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 2
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="2ewteGnDnoZtWgX6BvBdKXbwQ1F" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.TMWServer [:Main.main()].executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "client",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Nhat Hung/Documents/GitHub/IP-TMW-Server/server/TMWServer"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.TMWServer [:Main.main()].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;client&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Nhat Hung/Documents/GitHub/IP-TMW-Server/server/TMWServer&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

@@ -59,16 +59,21 @@ public class Registration extends JFrame {
         });
     }
 
+    public void reset() {
+        okButton.setEnabled(true);
+        destLabelTextField.setEnabled(true);
+        portTextField.setEnabled(true);
+        progressBar.setVisible(false);
+    }
+
     public void update() {
         if (uiObserver.getCurrentState() == ConnectingState.CONNECTED) {
             uiObserver.setCurrentState(ConnectingState.WAITING);
             connectingDialog.setVisible(false);
             setVisible(false);
             JOptionPane.showMessageDialog(null, "Connected to server", "Success", JOptionPane.INFORMATION_MESSAGE);
-            String name = JOptionPane.showInputDialog("Enter your name: ");
-            uiObserver.setUsername(name);
-            storage.setClientName(name);
-            uiObserver.setCurrentPhase(Phase.LOBBY);
+
+            uiObserver.setCurrentState(ConnectingState.VALIDATING_USERNAME);
         } else if (uiObserver.getCurrentState() == ConnectingState.FAILED) {
             uiObserver.setCurrentState(ConnectingState.WAITING);
             connectingDialog.setVisible(false);
@@ -77,6 +82,34 @@ public class Registration extends JFrame {
             portTextField.setEnabled(true);
             progressBar.setVisible(false);
             JOptionPane.showMessageDialog(null, "Error connecting to server", "Error", JOptionPane.ERROR_MESSAGE);
+//            uiObserver.setCurrentState(ConnectingState.VALIDATING_USERNAME);
+        } else if (uiObserver.getCurrentState() == ConnectingState.VALIDATING_USERNAME || uiObserver.getCurrentState() == ConnectingState.VALIDATING_USERNAME_FAILED) {
+            String name = null;
+            while (true) {
+                name = JOptionPane.showInputDialog("Enter your name: ");
+                if (name == null || name.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please enter your name", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    break;
+                }
+            }
+            uiObserver.setCurrentState(ConnectingState.WAITING);
+            uiObserver.setUsername(name);
+            storage.setClientName(name);
+        } else if (uiObserver.getCurrentState() == ConnectingState.VALIDATING_USERNAME_SUCCESS) {
+        } else if (uiObserver.getCurrentState() == ConnectingState.WAITING) {
+            if (storage.getIsAuthenticated() != null) {
+                if (storage.getIsAuthenticated()) {
+                    System.out.println("Username validated" + storage.getClientName());
+                    uiObserver.setCurrentPhase(Phase.LOBBY);
+                    uiObserver.setCurrentState(ConnectingState.WAITING);
+                } else {
+                    System.out.println("Username failed" + storage.getClientName());
+                    JOptionPane.showMessageDialog(null, "Username already exists", "Error", JOptionPane.ERROR_MESSAGE);
+                    uiObserver.setCurrentState(ConnectingState.VALIDATING_USERNAME);
+                }
+                storage.setIsAuthenticated(null);
+            }
         }
     }
 

@@ -93,12 +93,14 @@ public class GUIManager {
     public void gameFinished() {
         ((JFrame) currentPhase).setVisible(false);
         currentPhase = finalStanding;
+        finalStanding.initTable();
         finalStanding.setVisible(true);
         new Thread(() -> {
             try {
                 Thread.sleep(finalStanding.getWaitingTime());
                 javax.swing.SwingUtilities.invokeAndWait(() -> {
                     gameRegistration();
+                    registration.reset();
                 });
             } catch (InterruptedException | InvocationTargetException e) {
                 e.printStackTrace();
@@ -110,6 +112,10 @@ public class GUIManager {
         ((JFrame) currentPhase).setVisible(false);
         currentPhase = registration;
         registration.setVisible(true);
+        finalStanding.reset();
+        inGame.reset();
+        lobby.reset();
+        uiObserver.reset();
     }
 
     public void gameLobby() {

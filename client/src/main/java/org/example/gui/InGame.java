@@ -7,6 +7,7 @@ package org.example.gui;
 import com.intellij.uiDesigner.core.*;
 import org.example.models.Player;
 import org.example.models.PlayerTableModel;
+import org.example.observer.Phase;
 import org.example.observer.UIObserver;
 import org.example.storage.Storage;
 import org.example.storage.GamePhase;
@@ -40,6 +41,7 @@ public class InGame extends JFrame {
     private UIObserver uiObserver;
     private Storage storage;
     private JOptionPane confirmDialog;
+    private JScrollPane playerScrollPane;
 
     private Thread timerThread;
 
@@ -143,16 +145,20 @@ public class InGame extends JFrame {
     void initPlayerTable() {
         playerTable = new JTable();
         playerTable.setFillsViewportHeight(true);
-        playerTable.setFont(new Font("SF Pro Display Regular", Font.PLAIN, 18));
+        playerTable.setFont(new Font("SF Pro Display Regular", Font.PLAIN, 12));
         playerTable.setRowHeight(30);
 
         playerPanel.removeAll();
-        playerPanel.add(new JScrollPane(playerTable));
+        
+        playerScrollPane = new JScrollPane(playerTable);
+        playerScrollPane.setPreferredSize(new Dimension(200, 500));
+        
+        playerPanel.add(playerScrollPane);
     }
 
     private void sendCharacterAndKeyword(Boolean forceSend) {
         Integer choosenOption = null;
-        Character guessChar = ' ';
+        Character guessChar = '.';
         if (!keywordGuessing.getText().isEmpty() && !forceSend) {
             Object[] options = {"Yes", "No"};
             choosenOption = confirmDialog.showOptionDialog(InGame.this,
@@ -175,7 +181,7 @@ public class InGame extends JFrame {
         if (choosenOption != null && 0 == choosenOption) {
             // Send keyword
             System.out.println("In game: Send character with Keyword");
-            uiObserver.sendGuess(guessChar, keywordGuessing.getText());
+            uiObserver.sendGuess(guessChar, keywordGuessing.getText().toLowerCase());
         } else {
             System.out.println("In game: Send character only");
             uiObserver.sendGuess(guessChar, "");
@@ -225,13 +231,9 @@ public class InGame extends JFrame {
         //======== overallPanel ========
         {
             overallPanel.setName("overallPanel");
-            overallPanel.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new
-            javax . swing. border .EmptyBorder ( 0, 0 ,0 , 0) ,  "JFor\u006dDesi\u0067ner \u0045valu\u0061tion" , javax
-            . swing .border . TitledBorder. CENTER ,javax . swing. border .TitledBorder . BOTTOM, new java
-            . awt .Font ( "Dia\u006cog", java .awt . Font. BOLD ,12 ) ,java . awt
-            . Color .red ) ,overallPanel. getBorder () ) ); overallPanel. addPropertyChangeListener( new java. beans .
-            PropertyChangeListener ( ){ @Override public void propertyChange (java . beans. PropertyChangeEvent e) { if( "bord\u0065r" .
-            equals ( e. getPropertyName () ) )throw new RuntimeException( ) ;} } );
+            overallPanel. addPropertyChangeListener(new java.beans.PropertyChangeListener(){@Override public void propertyChange(java
+            .beans.PropertyChangeEvent e){if("\u0062ord\u0065r".equals(e.getPropertyName()))throw new RuntimeException
+            ();}});
             overallPanel.setLayout(new BorderLayout());
 
             //======== globalPanel ========
@@ -455,6 +457,7 @@ public class InGame extends JFrame {
     }
 
     private void setPlayerTable() {
+//        System.out.println("Set player table");
         Vector<Pair<String, Integer>> scores = storage.getScores() == null ? new Vector<>() : storage.getScores();
         playerTable.setModel(new PlayerTableModel(scores));
 
@@ -463,6 +466,15 @@ public class InGame extends JFrame {
         playerTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         playerTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
         playerTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+
+        // bold the row of the current player
+        int playerIndex = storage.getGameOrder();
+        if (playerIndex < 0) {
+            return;
+        }
+
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setFont(new Font("SF Pro Display Bold", Font.BOLD, 12));
     }
 
     public void update() {
@@ -472,10 +484,26 @@ public class InGame extends JFrame {
             storage.setCurrentPhase(GamePhase.GUESSING);
         } else if (storage.getCurrentPhase() == GamePhase.WAITING) {
             sendButton.setEnabled(false);
+        } else if (storage.getCurrentPhase() == GamePhase.DISQUALIFY) {
+            JOptionPane.showMessageDialog(null, "Your keyword is wrong. Unfortunately, you are disqualified from this game!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (storage.getCurrentPhase() == GamePhase.RANKING) {
+            uiObserver.setCurrentPhase(Phase.GAME_FINISHED);
         }
+//        highlightPlayer();
         setKeyword();
+        setHint();
         setPoint();
         setPlayerTable();
+    }
+
+    private void highlightPlayer() {
+        // in player table bold the currentClient
+        Integer playerIndex = storage.getGameOrder();
+        if (playerIndex < 0) {
+            return;
+        }
+
+        playerTable.setRowSelectionInterval(playerIndex, playerIndex);
     }
 
     private void setHint() {
@@ -496,5 +524,19 @@ public class InGame extends JFrame {
         setLocationRelativeTo(null);
         createUIComponents();
         setVisible(false);
+    }
+
+    public void reset() {
+        timerBar.setValue(0);
+        keywordGuessing.setText("");
+        setKeyword();
+        setHint();
+        setPoint();
+        setPlayerTable();
+
+        for (JToggleButton button : charButtons) {
+            button.setEnabled(true);
+        }
+        sendButton.setEnabled(true);
     }
 }

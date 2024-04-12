@@ -103,11 +103,14 @@ public class Lobby extends JFrame {
 
     public void update() {
         setPlayerName();
-//        System.out.println(
-//                "Lobby: " + storage.getClientName() + " " + storage.getGameID() + " " + storage.getGameOrder() + " " + storage.getScores()
-//        );
+        System.out.println(
+                "Lobby: " + storage.getClientName() + " " + storage.getGameID() + " " + storage.getGameOrder() + " " + storage.getScores()
+        );
         if (storage.getGameID() != null) {
             uiObserver.setCurrentPhase(Phase.IN_GAME);
         }
+    }
+
+    public void reset() {
     }
 }

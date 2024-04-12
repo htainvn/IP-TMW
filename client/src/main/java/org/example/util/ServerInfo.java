@@ -42,6 +42,7 @@ public class ServerInfo {
         DISQUALIFY_ANNOUNCE,
         RANKING,
         DISCONNECTED,
+        REGISTERED_REJECTED,
     }
 
     private ServerInfo() {}

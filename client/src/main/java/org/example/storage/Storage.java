@@ -1,5 +1,6 @@
 package org.example.storage;
 
+import org.example.observer.ConnectingState;
 import org.javatuples.Pair;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import java.util.Vector;
 public class Storage {
     private String gameID;
     private String clientName;
-    private Integer gameOrder;
+    private Integer gameOrder = 0;
 
     private String hint;
     private String keyword;
@@ -27,21 +28,25 @@ public class Storage {
     private Vector<Pair<String, Integer>> scores;
 
     private Enum<GamePhase> currentPhase = GamePhase.WAITING;
+    private Boolean isAuthenticated = null;
 
     public void resetStorage() {
         gameID = null;
         clientName = null;
-        gameOrder = null;
+        gameOrder = 0;
         hint = null;
         keyword = null;
         scores = null;
         time = null;
         currentPlayer = null;
         isDisqualified = false;
+        isAuthenticated = null;
+        currentPhase = GamePhase.WAITING;
+        isAccepted = false;
     }
 
     public Number getPoint(String name) {
-        if(scores == null) return -1;
+        if(scores == null) return 0;
         for (Pair<String, Integer> score : scores) {
             if (score.getValue0().equals(name)) {
                 return score.getValue1();

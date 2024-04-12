@@ -62,9 +62,12 @@ public class RankingAnnounce extends ServerMessage {
 
         Vector<Pair<String, Integer>> scoreVector = new Vector<>();
 
+        System.out.println("Players Final:");
         for (String player : scores.keySet()) {
             int score = scores.get(player).getAsJsonObject().get("score").getAsInt();
             scoreVector.add(new Pair<>(player, score));
+
+            System.out.println(player);
         }
 
         return scoreVector;

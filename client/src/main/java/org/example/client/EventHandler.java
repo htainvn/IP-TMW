@@ -1,6 +1,7 @@
 package org.example.client;
 
 import org.example.models.*;
+import org.example.observer.ConnectingState;
 import org.example.storage.GamePhase;
 import org.example.storage.Storage;
 import org.example.util.ServerInfo;
@@ -23,10 +24,15 @@ public class EventHandler implements IEventHandler {
     @Override
     public void onConnectionRespond(@NotNull ServerMessage msg) {
         System.out.println("onConnectionRespond");
-        if(Objects.equals(msg.getMessageHeader().trim(), ServerInfo.CONNECTION_ACCEPTED)) storage.setIsAccepted(true);
+        if(Objects.equals(msg.getMessageHeader().trim(), ServerInfo.CONNECTION_ACCEPTED)) {
+            storage.resetStorage();
+            storage.setIsAccepted(true);
+            storage.setIsAuthenticated(true);
+        }
         else {
             if(storage.getIsAccepted()) return;
-            SocketClient.stillConnected = false;
+//            SocketClient.stillConnected = false;
+            storage.setIsAuthenticated(false);
         }
     }
 
@@ -47,7 +53,7 @@ public class EventHandler implements IEventHandler {
     @Override
     public void onEndGame(@NotNull ServerMessage msg) {
         System.out.println("onEndGame");
-        storage.resetStorage();
+        storage.setCurrentPhase(GamePhase.RANKING);
     }
 
     @Override
@@ -84,6 +90,7 @@ public class EventHandler implements IEventHandler {
 
     public void onDisqualifyAnnounce(@NotNull ServerMessage serverMessage) {
         System.out.println("onDisqualifyAnnounce");
+        storage.setCurrentPhase(GamePhase.DISQUALIFY);
         storage.setIsDisqualified(true);
     }
 

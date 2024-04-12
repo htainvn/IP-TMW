@@ -25,6 +25,11 @@ public class UIObserver {
     @Setter
     Enum<ConnectingState> currentState = ConnectingState.WAITING;
 
+    public void reset() {
+        currentPhase = Phase.REGISTRATION;
+        currentState = ConnectingState.WAITING;
+    }
+
     @Autowired
     public UIObserver(SocketClient socketClient) {
         this.socketClient = socketClient;
