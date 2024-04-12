@@ -41,7 +41,7 @@ public class GameController {
     File currentDirFile = new File(".");
     String helper = currentDirFile.getAbsolutePath();
     Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
-    File file = new File(root.toString() + "/src/main/resources/database.txt");
+    File file = new File(root.toString() + "/TMWServer/src/main/resources/database.txt");
     try {
       Scanner scanner = new Scanner(file);
       // Load quizzes from file
@@ -154,9 +154,9 @@ public class GameController {
   }
 
   public String getGameState() {
-    return "GameID: " + gameid + "\n"
-        + "Hint: " + quiz.getHint() + "\n"
-        + "Current: " + currentWord + "\n";
+    return "GameID: " + gameid + "\r\n"
+        + "Hint: " + quiz.getHint() + "\r\n"
+        + "Current: " + currentWord + "\r\n";
   }
 
   public Boolean ifGameEnds() {
