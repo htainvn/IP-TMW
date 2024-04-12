@@ -306,16 +306,20 @@ public class EventHandler implements IEventHandler {
     for (int i = 0; i < numberOfClients; i++) {
       clientSockets[i] = clientContact.get(i);
       clientNames[i] = clientContact.getName(clientSockets[i]);
+    }
+
+    for (int i = 0; i < numberOfClients; i++) {
       messages[i] = ServerMessage.builder()
           .messageHeader(ServerInfo.GAME_START)
           .fromHost(ServerInfo.SERVER_HOST)
           .fromPort(ServerInfo.SERVER_PORT)
           .status(ServerInfo.STATUS_OK)
           .optionalMessageBody(String.format(
-              "GameID: %s\r\nName: %s\r\nOrder: %d",
+              "GameID: %s\r\nName: %s\r\nOrder: %d\r\nClients: %s",
               gameController.getGameid(),
               clientNames[i],
-              i
+              i,
+              String.join(", ", clientNames)
           ))
           .build();
     }
