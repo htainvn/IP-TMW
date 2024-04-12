@@ -128,6 +128,7 @@ public class GameController {
 
   public void nextIteration() {
     if (!isCharacterRevealed) iteration++;
+    iteration %= numPlayer;
     setCharacterRevealedMode(false);
     inGuessingCountdown = false;
   }

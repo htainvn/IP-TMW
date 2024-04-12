@@ -6,10 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Quiz {
+  @Getter
   private String hint;
   private String answer;
 
-  public String getHint() {
-    return hint;
-  }
 }
