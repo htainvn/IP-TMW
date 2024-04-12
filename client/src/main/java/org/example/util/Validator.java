@@ -27,19 +27,19 @@ public class Validator {
     }
 
     public boolean validate( String msg ) {
-
-        if( msg == null || msg.isEmpty() ) {
-            return false;
-        }
-
-        ServerMessage sm = ServerMessage.fromString(msg);
-        if( sm == null ) { return false; }
-
-        if( !Objects.equals(sm.getFromHost(), connectedHost) || !Objects.equals(sm.getFromPort(), connectedPort) ) {
-            System.out.println("Invalid connect address: " + sm.getFromHost() + ":" + sm.getFromPort());
-            System.out.println("Expected: " + connectedHost + ":" + connectedPort);
-            return false;
-        }
         return true;
+//        if( msg == null || msg.isEmpty() ) {
+//            return false;
+//        }
+//
+//        ServerMessage sm = ServerMessage.fromString(msg);
+//        if( sm == null ) { return false; }
+//
+//        if( !Objects.equals(sm.getFromHost(), connectedHost) || !Objects.equals(sm.getFromPort(), connectedPort) ) {
+//            System.out.println("Invalid connect address: " + sm.getFromHost() + ":" + sm.getFromPort());
+//            System.out.println("Expected: " + connectedHost + ":" + connectedPort);
+//            return false;
+//        }
+//        return true;
     }
 }

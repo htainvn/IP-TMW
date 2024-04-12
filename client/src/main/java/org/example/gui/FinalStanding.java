@@ -49,6 +49,9 @@ public class FinalStanding extends JFrame {
     public void initTable() {
         scores = storage.getScores() == null ? new Vector<>() : storage.getScores();
 
+        // sort scores and set rank
+        scores.sort((a, b) -> b.getValue1().compareTo(a.getValue1()));
+
         playerTable = new JTable();
         playerTable.setModel(new PlayerTableModel(scores));
         playerTable.setPreferredScrollableViewportSize(new Dimension(500, 350));
@@ -104,9 +107,13 @@ public class FinalStanding extends JFrame {
         //======== dialogPane ========
         {
             dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-            dialogPane. addPropertyChangeListener(new java.beans.PropertyChangeListener(){@Override public void propertyChange(java.beans.PropertyChangeEvent e
-            ){if("\u0062order".equals(e.getPropertyName()))throw new RuntimeException();}})
-            ;
+            dialogPane.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new
+            javax . swing. border .EmptyBorder ( 0, 0 ,0 , 0) ,  "JFor\u006dDesi\u0067ner \u0045valu\u0061tion" , javax
+            . swing .border . TitledBorder. CENTER ,javax . swing. border .TitledBorder . BOTTOM, new java
+            . awt .Font ( "Dia\u006cog", java .awt . Font. BOLD ,12 ) ,java . awt
+            . Color .red ) ,dialogPane. getBorder () ) ); dialogPane. addPropertyChangeListener( new java. beans .
+            PropertyChangeListener ( ){ @Override public void propertyChange (java . beans. PropertyChangeEvent e) { if( "bord\u0065r" .
+            equals ( e. getPropertyName () ) )throw new RuntimeException( ) ;} } );
             dialogPane.setLayout(new VerticalLayout());
 
             //======== contentPanel ========

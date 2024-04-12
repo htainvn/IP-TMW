@@ -486,6 +486,7 @@ public class InGame extends JFrame {
             sendButton.setEnabled(false);
         } else if (storage.getCurrentPhase() == GamePhase.DISQUALIFY) {
             JOptionPane.showMessageDialog(null, "Your keyword is wrong. Unfortunately, you are disqualified from this game!", "Error", JOptionPane.ERROR_MESSAGE);
+            storage.setCurrentPhase(GamePhase.WAITING);
         } else if (storage.getCurrentPhase() == GamePhase.RANKING) {
             uiObserver.setCurrentPhase(Phase.GAME_FINISHED);
         }

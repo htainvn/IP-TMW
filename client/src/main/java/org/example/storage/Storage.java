@@ -52,7 +52,7 @@ public class Storage {
                 return score.getValue1();
             }
         }
-        return -1;
+        return 0;
     }
 
     public void setInitialScores(String[] players) {
