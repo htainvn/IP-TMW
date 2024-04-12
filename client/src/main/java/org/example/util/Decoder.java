@@ -33,6 +33,12 @@ public class Decoder {
                 return MessageType.YOUR_TURN;
             case ServerInfo.RANKING_ANNOUNCE:
                 return MessageType.RANKING;
+            case ServerInfo.GAME_STATE:
+                return MessageType.GAME_STATE;
+            case ServerInfo.WINNER_ANNOUNCE:
+                return MessageType.WINNER_ANNOUNCE;
+            case ServerInfo.DISQUALIFY_ANNOUNCE:
+                return MessageType.DISQUALIFY_ANNOUNCE;
         }
 
         return null;

@@ -45,6 +45,7 @@ public class EventHandler implements IEventHandler {
     @Override
     public void onEndGame(@NotNull ServerMessage msg) {
         System.out.println("onEndGame");
+        storage.resetStorage();
     }
 
     @Override
@@ -71,5 +72,21 @@ public class EventHandler implements IEventHandler {
         System.out.println("sendGuessRequest");
         GuessReqMessage guessReqMessage = new GuessReqMessage(storage.getGameID(), storage.getClientName(), guessChar, guessWord);
         MessageSender.send(SocketClient.client, guessReqMessage);
+    }
+
+    public void onWinnerAnnounce(@NotNull ServerMessage serverMessage) {
+        System.out.println("onWinnerAnnounce");
+    }
+
+    public void onDisqualifyAnnounce(@NotNull ServerMessage serverMessage) {
+        System.out.println("onDisqualifyAnnounce");
+    }
+
+    public void onGameState(@NotNull GameStateMessage gameStateMessage) {
+        System.out.println("onGameState");
+        if( storage.getGameID() != null && !gameStateMessage.getGameID().equals(storage.getGameID())) return;
+        storage.setGameID(gameStateMessage.getGameID());
+        storage.setHint(gameStateMessage.getHint());
+        storage.setKeyword(gameStateMessage.getCurrentKeyword());
     }
 }

@@ -22,6 +22,15 @@ public class Storage {
 
     private Vector<Pair<String, Integer>> scores;
 
+    public void resetStorage() {
+        gameID = null;
+        clientName = null;
+        gameOrder = null;
+        hint = null;
+        keyword = null;
+        scores = null;
+    }
+
     public Number getPoint(String name) {
         if(scores == null) return -1;
         for (Pair<String, Integer> score : scores) {

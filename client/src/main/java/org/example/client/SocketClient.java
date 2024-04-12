@@ -1,6 +1,7 @@
 package org.example.client;
 
 import org.example.models.GameInfoMessage;
+import org.example.models.GameStateMessage;
 import org.example.models.RankingAnnounce;
 import org.example.models.ServerMessage;
 import org.example.util.Decoder;
@@ -108,7 +109,7 @@ public class SocketClient implements IClient {
         String raw_message;
 
         try {
-            ByteBuffer buffer = ByteBuffer.allocate(512);
+            ByteBuffer buffer = ByteBuffer.allocate(8192);
             client.read(buffer);
             raw_message = new String(buffer.array(), 0, buffer.limit());
         } catch (IOException e) {
@@ -170,6 +171,21 @@ public class SocketClient implements IClient {
                 case GAME_END:
                     eventHandler.onEndGame(
                             Objects.requireNonNull(ServerMessage.fromString(raw_message))
+                    );
+                    break;
+                case WINNER_ANNOUNCE:
+                    eventHandler.onWinnerAnnounce(
+                            Objects.requireNonNull(ServerMessage.fromString(raw_message))
+                    );
+                    break;
+                case DISQUALIFY_ANNOUNCE:
+                    eventHandler.onDisqualifyAnnounce(
+                            Objects.requireNonNull(ServerMessage.fromString(raw_message))
+                    );
+                    break;
+                case GAME_STATE:
+                    eventHandler.onGameState(
+                            Objects.requireNonNull(GameStateMessage.fromString(raw_message))
                     );
                     break;
                 default:

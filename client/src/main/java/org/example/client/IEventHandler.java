@@ -17,5 +17,9 @@ public interface IEventHandler {
 
     void onRankingAnnounce(@NotNull RankingAnnounce msg);
 
+    void onWinnerAnnounce(@NotNull ServerMessage msg);
+
+    void onDisqualifyAnnounce(@NotNull ServerMessage msg);
+
     void onTurn();
 }
