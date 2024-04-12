@@ -29,6 +29,8 @@ public class ServerInfo {
 
     public static final Integer SERVER_MESSAGE_LENGTH = 6;
 
+    public static final Integer MY_TURN_MESSAGE_LENGTH = 4;
+
     public enum MessageType {
         CONNECTION,
         GUESS,

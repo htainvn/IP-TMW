@@ -197,6 +197,7 @@ new FormModel {
 				name: "playerPanel"
 				"minimumSize": new java.awt.Dimension( 200, 10 )
 				"preferredSize": new java.awt.Dimension( 200, 10 )
+				"foreground": new java.awt.Color( 255, 255, 255, 255 )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "After"
 			} )

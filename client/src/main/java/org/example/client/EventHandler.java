@@ -1,6 +1,7 @@
 package org.example.client;
 
 import org.example.models.*;
+import org.example.storage.GamePhase;
 import org.example.storage.Storage;
 import org.example.util.ServerInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +58,10 @@ public class EventHandler implements IEventHandler {
     }
 
     @Override
-    public void onTurn() {
+    public void onTurn(@NotNull Integer time) {
         System.out.println("onTurn");
+        storage.setTime(time);
+        storage.setCurrentPhase(GamePhase.MY_TURN);
 //        sendGuessRequest('o', "Address Resolution Protocol");
     }
 

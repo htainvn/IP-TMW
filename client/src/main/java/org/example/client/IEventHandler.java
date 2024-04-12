@@ -21,5 +21,5 @@ public interface IEventHandler {
 
     void onDisqualifyAnnounce(@NotNull ServerMessage msg);
 
-    void onTurn();
+    void onTurn(@NotNull Integer time);
 }

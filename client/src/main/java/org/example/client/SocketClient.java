@@ -1,9 +1,6 @@
 package org.example.client;
 
-import org.example.models.GameInfoMessage;
-import org.example.models.GameStateMessage;
-import org.example.models.RankingAnnounce;
-import org.example.models.ServerMessage;
+import org.example.models.*;
 import org.example.util.Decoder;
 import org.example.util.ServerInfo.MessageType;
 import lombok.NoArgsConstructor;
@@ -166,7 +163,7 @@ public class SocketClient implements IClient {
                     );
                     break;
                 case YOUR_TURN:
-                    eventHandler.onTurn();
+                    eventHandler.onTurn(Objects.requireNonNull(MyTurnMessage.fromString(raw_message).getTime()));
                     break;
                 case GAME_END:
                     eventHandler.onEndGame(
@@ -202,8 +199,8 @@ public class SocketClient implements IClient {
     }
 
     public void sendGuess(char guessChar, String guessWord) {
-//        eventHandler.sendGuessRequest(guessChar, guessWord);
-        eventHandler.sendRegisterRequest("abcd");
+        eventHandler.sendGuessRequest(guessChar, guessWord);
+//        eventHandler.sendRegisterRequest("abcd");
     }
 
     public Boolean isConnected() {

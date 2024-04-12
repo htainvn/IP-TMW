@@ -17,10 +17,13 @@ public class Storage {
 
     private String hint;
     private String keyword;
+    private Integer time;
 
     private Boolean isAccepted = false;
 
     private Vector<Pair<String, Integer>> scores;
+
+    private Enum<GamePhase> currentPhase = GamePhase.WAITING;
 
     public void resetStorage() {
         gameID = null;
@@ -29,6 +32,7 @@ public class Storage {
         hint = null;
         keyword = null;
         scores = null;
+        time = null;
     }
 
     public Number getPoint(String name) {

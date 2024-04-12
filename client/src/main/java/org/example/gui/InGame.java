@@ -9,11 +9,13 @@ import org.example.models.Player;
 import org.example.models.PlayerTableModel;
 import org.example.observer.UIObserver;
 import org.example.storage.Storage;
+import org.example.storage.GamePhase;
 import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -34,11 +36,12 @@ public class InGame extends JFrame {
     private ButtonGroup buttonGroup = new ButtonGroup();
     private final int BUTTON_SIZE = 50;
     private final int WORDS_PER_ROW = 15;
-    private final int COUNT_DOWN = 10 * 1000;
     private JTable playerTable;
     private UIObserver uiObserver;
     private Storage storage;
     private JOptionPane confirmDialog;
+
+    private Thread timerThread;
 
     private void createUIComponents() {
         // TODO: add custom component creation code here
@@ -54,19 +57,19 @@ public class InGame extends JFrame {
         SimpleAttributeSet centerAttribute = new SimpleAttributeSet();
         StyleConstants.setAlignment(centerAttribute, StyleConstants.ALIGN_CENTER);
         documentStyle.setParagraphAttributes(0, documentStyle.getLength(), centerAttribute, false);
-        timerFill();
     }
     
     public void initData() {
         setHint();
         username.setText(storage.getClientName());
+        storage.setCurrentPhase(GamePhase.WAITING);
     }
 
     public void setKeyword() {
 
         String keyword = storage.getKeyword() == null ? "Hello World" : storage.getKeyword();
 //        keyword = "______________________________";
-        System.out.println("Keyword Ingame: " + keyword);
+//        System.out.println("Keyword Ingame: " + keyword);
         keywordPanel.removeAll();
         keywordPanel.setLayout(new GridLayout((int) Math.ceil((float)keyword.length() / (float)WORDS_PER_ROW), min(WORDS_PER_ROW, keyword.length())));
 //        keywordPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
@@ -85,17 +88,31 @@ public class InGame extends JFrame {
     }
 
     public void timerFill() {
-        int i = 0;
+        timerBar.setValue(0);
         final int increment = 100;
-        try {
-            while (i <= COUNT_DOWN) {
-                timerBar.setValue((int) (100.0 - (float)i * 100.0 / (float)COUNT_DOWN));
-                Thread.sleep(increment);
-                i += increment;
+        timerThread = new Thread(() -> {
+            int i = 0;
+            final int COUNT_DOWN = storage.getTime();
+
+            System.out.println("Count down: " + COUNT_DOWN);
+            try {
+                while (i <= COUNT_DOWN) {
+                    timerBar.setValue((int) (100.0 - (float)i * 100.0 / (float)COUNT_DOWN));
+                    Thread.sleep(increment);
+                    i += increment;
+                    if (storage.getCurrentPhase() == GamePhase.WAITING) {
+                        break;
+                    }
+                }
+
+                if (storage.getCurrentPhase() == GamePhase.GUESSING) {
+                    confirmDialog.setVisible(false);
+                    sendCharacterAndKeyword(true);
+                }
+            } catch (Exception e) {
             }
-            sendButton.doClick();
-        } catch (Exception e) {
-        }
+        });
+        timerThread.start();
     }
 
     private void initCharPanel() {
@@ -133,42 +150,50 @@ public class InGame extends JFrame {
         playerPanel.add(new JScrollPane(playerTable));
     }
 
+    private void sendCharacterAndKeyword(Boolean forceSend) {
+        Integer choosenOption = null;
+        Character guessChar = ' ';
+        if (!keywordGuessing.getText().isEmpty() && !forceSend) {
+            Object[] options = {"Yes", "No"};
+            choosenOption = confirmDialog.showOptionDialog(InGame.this,
+                    "Would you like to send keyword?",
+                    "Send keyword",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE,
+                    null,
+                    options,
+                    options[0]);
+        }
+
+        if (currentCharButton != null) {
+            guessChar = currentCharButton.getText().charAt(0);
+            currentCharButton.setSelected(false);
+            currentCharButton.setEnabled(false);
+            currentCharButton = null;
+        }
+
+        if (choosenOption != null && 0 == choosenOption) {
+            // Send keyword
+            System.out.println("In game: Send character with Keyword");
+            uiObserver.sendGuess(guessChar, keywordGuessing.getText());
+        } else {
+            System.out.println("In game: Send character only");
+            uiObserver.sendGuess(guessChar, "");
+        }
+        try {
+            timerThread.interrupt();
+        } catch (Exception e) {
+            System.out.println("Timer thread is not running");
+        }
+        timerBar.setValue(0);
+        storage.setCurrentPhase(GamePhase.WAITING);
+    }
+
     private void initGuessPanel() {
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Integer choosenOption = null;
-                Character guessChar = ' ';
-                if (!keywordGuessing.getText().isEmpty()) {
-                    Object[] options = {"Yes", "No"};
-                    choosenOption = confirmDialog.showOptionDialog(InGame.this,
-                            "Would you like to send keyword?",
-                            "Send keyword",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.WARNING_MESSAGE,
-                            null,
-                            options,
-                            options[0]);
-                }
-
-                if (currentCharButton != null) {
-                    guessChar = currentCharButton.getText().charAt(0);
-                    currentCharButton.setSelected(false);
-                    currentCharButton.setEnabled(false);
-                    currentCharButton = null;
-                }
-
-                if(choosenOption == null) return;
-
-                if (0 == choosenOption) {
-                    // Send keyword
-                    System.out.println("In game: condition01");
-                    uiObserver.sendGuess(guessChar, keywordGuessing.getText());
-                } else {
-                    System.out.println("In game: condition02");
-                    uiObserver.sendGuess(guessChar, "");
-
-                }
+                sendCharacterAndKeyword(false);
             }
         });
     }
@@ -200,13 +225,13 @@ public class InGame extends JFrame {
         //======== overallPanel ========
         {
             overallPanel.setName("overallPanel");
-            overallPanel.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new javax
-            . swing. border .EmptyBorder ( 0, 0 ,0 , 0) ,  "JF\u006frmDes\u0069gner \u0045valua\u0074ion" , javax. swing
-            .border . TitledBorder. CENTER ,javax . swing. border .TitledBorder . BOTTOM, new java. awt .
-            Font ( "D\u0069alog", java .awt . Font. BOLD ,12 ) ,java . awt. Color .red
-            ) ,overallPanel. getBorder () ) ); overallPanel. addPropertyChangeListener( new java. beans .PropertyChangeListener ( ){ @Override
-            public void propertyChange (java . beans. PropertyChangeEvent e) { if( "\u0062order" .equals ( e. getPropertyName (
-            ) ) )throw new RuntimeException( ) ;} } );
+            overallPanel.setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new
+            javax . swing. border .EmptyBorder ( 0, 0 ,0 , 0) ,  "JFor\u006dDesi\u0067ner \u0045valu\u0061tion" , javax
+            . swing .border . TitledBorder. CENTER ,javax . swing. border .TitledBorder . BOTTOM, new java
+            . awt .Font ( "Dia\u006cog", java .awt . Font. BOLD ,12 ) ,java . awt
+            . Color .red ) ,overallPanel. getBorder () ) ); overallPanel. addPropertyChangeListener( new java. beans .
+            PropertyChangeListener ( ){ @Override public void propertyChange (java . beans. PropertyChangeEvent e) { if( "bord\u0065r" .
+            equals ( e. getPropertyName () ) )throw new RuntimeException( ) ;} } );
             overallPanel.setLayout(new BorderLayout());
 
             //======== globalPanel ========
@@ -393,6 +418,7 @@ public class InGame extends JFrame {
             {
                 playerPanel.setMinimumSize(new Dimension(200, 10));
                 playerPanel.setPreferredSize(new Dimension(200, 10));
+                playerPanel.setForeground(Color.white);
                 playerPanel.setName("playerPanel");
                 playerPanel.setLayout(new FlowLayout());
             }
@@ -431,9 +457,22 @@ public class InGame extends JFrame {
     private void setPlayerTable() {
         Vector<Pair<String, Integer>> scores = storage.getScores() == null ? new Vector<>() : storage.getScores();
         playerTable.setModel(new PlayerTableModel(scores));
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        playerTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+        playerTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+        playerTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
     }
 
     public void update() {
+        if (storage.getCurrentPhase() == GamePhase.MY_TURN) {
+            timerFill();
+            sendButton.setEnabled(true);
+            storage.setCurrentPhase(GamePhase.GUESSING);
+        } else if (storage.getCurrentPhase() == GamePhase.WAITING) {
+            sendButton.setEnabled(false);
+        }
         setKeyword();
         setPoint();
         setPlayerTable();
@@ -456,5 +495,6 @@ public class InGame extends JFrame {
         pack();
         setLocationRelativeTo(null);
         createUIComponents();
+        setVisible(false);
     }
 }
