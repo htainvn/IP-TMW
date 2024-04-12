@@ -1,6 +1,7 @@
 package org.example.server;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
@@ -43,14 +44,25 @@ public class GameController {
   private Boolean inGuessingCountdown = Boolean.FALSE;
   private Boolean isCharacterRevealed = Boolean.TRUE;
 
-  public GameController() {
+  public GameController() throws FileNotFoundException {
     quizzes = new ArrayList<>();
     File currentDirFile = new File(".");
     String helper = currentDirFile.getAbsolutePath();
     Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
     File file = new File(root.toString() + "/src/main/resources/database.txt");
+    Scanner scanner = null;
+
     try {
-      Scanner scanner = new Scanner(file);
+      scanner = new Scanner(file);
+    } catch (FileNotFoundException e) {
+      try {
+        file = new File(root.toString() + "/TMWServer/src/main/resources/database.txt");
+        scanner = new Scanner(file);
+      } catch (FileNotFoundException ex) {
+        throw new RuntimeException(ex);
+      }
+    }
+    try {
       // Load quizzes from file
       int cnt = Integer.parseInt(scanner.nextLine());
       for (int i = 0; i < cnt; i++) {
@@ -62,6 +74,7 @@ public class GameController {
     } catch (Exception e) {
       e.printStackTrace();
     }
+
   }
 
   public void newGame() {
